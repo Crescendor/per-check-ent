@@ -568,10 +568,7 @@
                 </div>
                 <h4 class="nfc-scan-title" id="nfc-scan-user-name">Kullanıcı: Ahmet Yılmaz</h4>
                 <p class="nfc-scan-desc">
-                    Lütfen kartı tabletin arkasındaki NFC okuyucusuna yaklaştırın.<br>
-                    <span style="color: var(--accent-amber); font-weight: 500; font-size: 0.85rem; margin-top: 0.5rem; display: inline-block;">
-                        (Alternatif: Ekranın altındaki 'Sanal NFC Kartı' simülatöründen bir kart seçerek eşleştirebilirsiniz.)
-                    </span>
+                    Lütfen kartı tabletin arkasındaki NFC okuyucusuna yaklaştırın.
                 </p>
             </div>
             <div class="modal-footer">
@@ -580,40 +577,7 @@
         </div>
     </div>
 
-    <!-- ==========================================================================
-         7. VIRTUAL NFC CARD SIMULATOR (FAB + PANEL)
-         ========================================================================== -->
-    <button class="simulator-toggle-btn" id="simulator-toggle-btn">
-        <i data-lucide="cpu"></i>
-        <span>Sanal Kart Okutucu</span>
-    </button>
 
-    <div class="simulator-panel glass-panel" id="simulator-panel">
-        <div class="simulator-header">
-            <span class="simulator-title">
-                <i data-lucide="cpu"></i> Sanal NFC Kart Simülatörü
-            </span>
-            <button class="btn-close-modal" id="simulator-close-btn" style="color: var(--accent-amber);">
-                <i data-lucide="chevron-down"></i>
-            </button>
-        </div>
-        <div class="simulator-body">
-            <span class="simulator-subtitle">Kayıtlı Çalışan Kartları</span>
-            <div class="card-simulator-grid" id="sim-cards-list">
-                <!-- Render existing cards with quick buttons to trigger them -->
-            </div>
-            
-            <div style="border-top: 1px solid var(--glass-border); padding-top: 1rem;">
-                <span class="simulator-subtitle" style="display: block; margin-bottom: 0.5rem;">Yeni / Bilinmeyen Kart Okut</span>
-                <div class="custom-card-input-group">
-                    <input type="text" id="sim-custom-uid" placeholder="Örn: 04:DE:8F:A2" value="04:DE:8F:A2">
-                    <button class="btn-sim-trigger" id="btn-sim-trigger-custom">
-                        <i data-lucide="rss"></i> Okut
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
 
     <!-- Core Javascript Code -->
     <script src="app.js"></script>

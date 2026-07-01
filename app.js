@@ -17,7 +17,7 @@ let state = {
 
 // --- Constant Thresholds & Config ---
 const COUNTDOWN_DURATION = 7; // Welcome overlay duration in seconds
-const DEFAULT_ADMIN_CREDS = { username: 'admin', password: '123' };
+const DEFAULT_ADMIN_CREDS = { username: 'baydin', password: 'Doxish44.' };
 
 // --- Web Audio API Synth Tone Generator ---
 function playBeep(type) {
@@ -94,47 +94,19 @@ function playBeep(type) {
 
 // --- Data Seeding & Storage Handlers ---
 function initDatabase() {
-    // 1. Teams Seeding
+    // Seed empty databases
     if (!localStorage.getItem('nothelle_teams')) {
-        const defaultTeams = [
-            { id: 'team-1', name: 'Yazılım' },
-            { id: 'team-2', name: 'Tasarım' },
-            { id: 'team-3', name: 'Pazarlama' },
-            { id: 'team-4', name: 'İnsan Kaynakları' }
-        ];
-        localStorage.setItem('nothelle_teams', JSON.stringify(defaultTeams));
+        localStorage.setItem('nothelle_teams', JSON.stringify([]));
     }
-    
-    // 2. Users Seeding
     if (!localStorage.getItem('nothelle_users')) {
-        const defaultUsers = [
-            { id: 'user-1', name: 'Furkan', surname: 'Yalçın', teamId: 'team-1', title: 'Senior Software Architect', cardId: '04:A1:B2:C3', isPresent: false, lastActivity: null },
-            { id: 'user-2', name: 'Ece', surname: 'Kaya', teamId: 'team-1', title: 'Frontend Developer', cardId: '04:B2:C3:D4', isPresent: true, lastActivity: new Date(new Date().getTime() - 2*3600*1000).toISOString() }, // 2 hours ago
-            { id: 'user-3', name: 'Can', surname: 'Demir', teamId: 'team-2', title: 'UI/UX Lead', cardId: '04:C3:D4:E5', isPresent: false, lastActivity: null },
-            { id: 'user-4', name: 'Gözde', surname: 'Şahin', teamId: 'team-3', title: 'Marketing Specialist', cardId: '04:D4:E5:F6', isPresent: true, lastActivity: new Date(new Date().getTime() - 4*3600*1000).toISOString() }, // 4 hours ago
-            { id: 'user-5', name: 'Mert', surname: 'Yılmaz', teamId: 'team-4', title: 'HR Manager', cardId: null, isPresent: false, lastActivity: null }
-        ];
-        localStorage.setItem('nothelle_users', JSON.stringify(defaultUsers));
+        localStorage.setItem('nothelle_users', JSON.stringify([]));
     }
-
-    // 3. Leaders Seeding
     if (!localStorage.getItem('nothelle_leaders')) {
-        const defaultLeaders = [
-            { id: 'leader-1', username: 'yazilim_lider', password: '123', teamId: 'team-1' },
-            { id: 'leader-2', username: 'tasarim_lider', password: '123', teamId: 'team-2' }
-        ];
-        localStorage.setItem('nothelle_leaders', JSON.stringify(defaultLeaders));
+        localStorage.setItem('nothelle_leaders', JSON.stringify([]));
     }
-
-    // 4. Logs Seeding
     if (!localStorage.getItem('nothelle_logs')) {
-        const defaultLogs = [
-            { timestamp: new Date(new Date().getTime() - 4*3600*1000).toISOString(), userId: 'user-4', userName: 'Gözde Şahin', teamName: 'Pazarlama', type: 'in' },
-            { timestamp: new Date(new Date().getTime() - 2*3600*1000).toISOString(), userId: 'user-2', userName: 'Ece Kaya', teamName: 'Yazılım', type: 'in' }
-        ];
-        localStorage.setItem('nothelle_logs', JSON.stringify(defaultLogs));
+        localStorage.setItem('nothelle_logs', JSON.stringify([]));
     }
-
     loadData();
 }
 
@@ -464,36 +436,7 @@ function renderLeaderDashboard() {
     lucide.createIcons();
 }
 
-// 6. Render Card List in Virtual NFC Simulator
-function renderSimulatorCards() {
-    const listContainer = document.getElementById('sim-cards-list');
-    listContainer.innerHTML = '';
-    
-    // Only list users that actually have a card linked
-    const usersWithCards = state.users.filter(u => u.cardId);
-    
-    if (usersWithCards.length === 0) {
-        listContainer.innerHTML = `<p style="font-size: 0.85rem; color: var(--text-muted); text-align: center;">Eşleşmiş herhangi bir kart bulunamadı. Lütfen önce admin panelinden bir kullanıcıya kart atayın.</p>`;
-        return;
-    }
-    
-    usersWithCards.forEach(user => {
-        const btn = document.createElement('button');
-        btn.className = 'sim-card-btn';
-        btn.onclick = () => triggerNfcCardScan(user.cardId);
-        
-        const dotClass = user.isPresent ? 'sim-status-dot sim-dot-in' : 'sim-status-dot sim-dot-out';
-        
-        btn.innerHTML = `
-            <div class="sim-card-info">
-                <span class="sim-card-name">${user.name} ${user.surname}</span>
-                <span class="sim-card-uid">UID: ${user.cardId}</span>
-            </div>
-            <div class="${dotClass}" title="${user.isPresent ? 'Ofiste' : 'Dışarıda'}"></div>
-        `;
-        listContainer.appendChild(btn);
-    });
-}
+
 
 // --- NFC Operations ---
 
@@ -536,7 +479,7 @@ function handleNfcScan(uid) {
         // Re-render
         renderUsersList();
         renderAdminDashboard();
-        renderSimulatorCards();
+        
         return;
     }
     
@@ -583,14 +526,10 @@ function handleNfcScan(uid) {
     // Render current active layout views (for dashboards that may be listening or rendering)
     renderAdminDashboard();
     renderLeaderDashboard();
-    renderSimulatorCards();
+    
 }
 
-// Function to trigger NFC scan from simulator
-function triggerNfcCardScan(uid) {
-    if (!uid) return;
-    handleNfcScan(uid);
-}
+
 
 // Web NFC API integration (NDEFReader)
 async function startWebNfcReader() {
@@ -851,7 +790,7 @@ document.getElementById('employee-form').addEventListener('submit', (e) => {
     closeModal('modal-employee');
     renderUsersList();
     renderAdminDashboard();
-    renderSimulatorCards();
+    
 });
 
 // Edit Employee trigger
@@ -876,7 +815,7 @@ window.deleteUser = function(userId) {
         saveData('nothelle_users', state.users);
         renderUsersList();
         renderAdminDashboard();
-        renderSimulatorCards();
+        
     }
 };
 
@@ -1050,7 +989,7 @@ window.addEventListener('storage', (e) => {
             renderLeaderDashboard();
         }
     }
-    renderSimulatorCards();
+    
 });
 
 // --- Dom Interactive Setup (onload) ---
@@ -1114,40 +1053,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // Search filter trigger
     document.getElementById('search-users').addEventListener('input', renderUsersList);
     
-    // --- Interactive Virtual NFC Simulator Panel triggers ---
-    const simPanel = document.getElementById('simulator-panel');
-    const simToggle = document.getElementById('simulator-toggle-btn');
-    const simClose = document.getElementById('simulator-close-btn');
     
-    simToggle.addEventListener('click', () => {
-        simPanel.classList.toggle('active');
-        renderSimulatorCards();
-    });
-    
-    simClose.addEventListener('click', () => {
-        simPanel.classList.remove('active');
-    });
-    
-    // Custom unknown card simulation scan button trigger
-    document.getElementById('btn-sim-trigger-custom').addEventListener('click', () => {
-        const uidInput = document.getElementById('sim-custom-uid');
-        const customUid = uidInput.value.trim();
-        if (customUid) {
-            triggerNfcCardScan(customUid);
-            // Randomize custom UID for next test ease
-            const hexChars = '0123456789ABCDEF';
-            let nextUid = '';
-            for(let i=0; i<4; i++) {
-                nextUid += hexChars[Math.floor(Math.random()*16)] + hexChars[Math.floor(Math.random()*16)] + (i < 3 ? ':' : '');
-            }
-            uidInput.value = nextUid;
-        }
-    });
-
-    // Pulse animation click is a shortcut to scan a mock card
-    document.getElementById('kiosk-nfc-pulse').addEventListener('click', () => {
-        // Toggle simulator panel to make it intuitive
-        simPanel.classList.add('active');
-        renderSimulatorCards();
-    });
 });
+
