@@ -19,7 +19,65 @@ const MIME_TYPES = {
     '.json': 'application/json'
 };
 
+const DB_DIR = fs.existsSync('/data') ? '/data' : '.';
+const DB_PATH = path.join(DB_DIR, 'db.json');
+const DEFAULT_DATA = {
+    users: [],
+    teams: [],
+    leaders: [],
+    logs: []
+};
+
+// Initialize database file if it does not exist
+if (!fs.existsSync(DB_PATH)) {
+    try {
+        fs.writeFileSync(DB_PATH, JSON.stringify(DEFAULT_DATA, null, 2), 'utf8');
+        console.log(`Created default database at ${DB_PATH}`);
+    } catch (err) {
+        console.error(`Failed to create database file at ${DB_PATH}:`, err);
+    }
+}
+
 const server = http.createServer((req, res) => {
+    // Intercept API routes for database persistence
+    if (req.url === '/api/data') {
+        if (req.method === 'GET') {
+            fs.readFile(DB_PATH, 'utf8', (err, data) => {
+                if (err) {
+                    res.writeHead(500, { 'Content-Type': 'application/json; charset=utf-8' });
+                    res.end(JSON.stringify({ error: 'Veritabanı okunamadı' }));
+                } else {
+                    res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
+                    res.end(data);
+                }
+            });
+            return;
+        } else if (req.method === 'POST') {
+            let body = '';
+            req.on('data', chunk => {
+                body += chunk.toString();
+            });
+            req.on('end', () => {
+                try {
+                    const parsed = JSON.parse(body);
+                    fs.writeFile(DB_PATH, JSON.stringify(parsed, null, 2), 'utf8', (err) => {
+                        if (err) {
+                            res.writeHead(500, { 'Content-Type': 'application/json; charset=utf-8' });
+                            res.end(JSON.stringify({ error: 'Veritabanı kaydedilemedi' }));
+                        } else {
+                            res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
+                            res.end(JSON.stringify({ success: true }));
+                        }
+                    });
+                } catch (e) {
+                    res.writeHead(400, { 'Content-Type': 'application/json; charset=utf-8' });
+                    res.end(JSON.stringify({ error: 'Geçersiz JSON verisi' }));
+                }
+            });
+            return;
+        }
+    }
+
     // Determine the file path
     let filePath = '.' + req.url;
     if (filePath === './') {

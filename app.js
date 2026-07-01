@@ -93,21 +93,33 @@ function playBeep(type) {
 }
 
 // --- Data Seeding & Storage Handlers ---
-function initDatabase() {
-    // Seed empty databases
-    if (!localStorage.getItem('nothelle_teams')) {
-        localStorage.setItem('nothelle_teams', JSON.stringify([]));
+// --- Data Seeding & Storage Handlers ---
+async function initDatabase() {
+    try {
+        const response = await fetch('/api/data');
+        const data = await response.json();
+        state.users = data.users || [];
+        state.teams = data.teams || [];
+        state.leaders = data.leaders || [];
+        state.logs = data.logs || [];
+    } catch (err) {
+        console.error("Failed to load server database, falling back to localStorage", err);
+        // Fallback to localStorage
+        state.users = JSON.parse(localStorage.getItem('nothelle_users')) || [];
+        state.teams = JSON.parse(localStorage.getItem('nothelle_teams')) || [];
+        state.leaders = JSON.parse(localStorage.getItem('nothelle_leaders')) || [];
+        state.logs = JSON.parse(localStorage.getItem('nothelle_logs')) || [];
     }
-    if (!localStorage.getItem('nothelle_users')) {
-        localStorage.setItem('nothelle_users', JSON.stringify([]));
-    }
-    if (!localStorage.getItem('nothelle_leaders')) {
-        localStorage.setItem('nothelle_leaders', JSON.stringify([]));
-    }
-    if (!localStorage.getItem('nothelle_logs')) {
-        localStorage.setItem('nothelle_logs', JSON.stringify([]));
-    }
-    loadData();
+    
+    // Perform initial render
+    populateDropdowns();
+    renderUsersList();
+    renderTeamsList();
+    renderLeadersList();
+    renderLogsList();
+    
+    // Start database polling to sync multiple devices in real-time
+    startDatabasePolling();
 }
 
 function loadData() {
@@ -117,11 +129,83 @@ function loadData() {
     state.logs = JSON.parse(localStorage.getItem('nothelle_logs')) || [];
 }
 
-function saveData(key, data) {
-    localStorage.setItem(key, JSON.stringify(data));
-    loadData();
-    // Dispatch storage event manually for same-tab triggers if needed
+async function saveDatabase() {
+    // Keep local storage as backup
+    localStorage.setItem('nothelle_users', JSON.stringify(state.users));
+    localStorage.setItem('nothelle_teams', JSON.stringify(state.teams));
+    localStorage.setItem('nothelle_leaders', JSON.stringify(state.leaders));
+    localStorage.setItem('nothelle_logs', JSON.stringify(state.logs));
+    
+    try {
+        await fetch('/api/data', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                users: state.users,
+                teams: state.teams,
+                leaders: state.leaders,
+                logs: state.logs
+            })
+        });
+    } catch (err) {
+        console.error("Failed to save database to server", err);
+    }
+    
+    // Dispatch storage event locally (for same-device, multiple tabs)
     window.dispatchEvent(new Event('storage'));
+}
+
+function saveData(key, data) {
+    if (key === 'nothelle_users') state.users = data;
+    if (key === 'nothelle_teams') state.teams = data;
+    if (key === 'nothelle_leaders') state.leaders = data;
+    if (key === 'nothelle_logs') state.logs = data;
+    
+    saveDatabase();
+}
+
+// Periodically poll database from server to sync multiple devices
+function startDatabasePolling() {
+    setInterval(async () => {
+        try {
+            const response = await fetch('/api/data');
+            const data = await response.json();
+            
+            // Check if data actually changed to avoid unnecessary re-rendering
+            const dataStr = JSON.stringify(data);
+            const currentStateStr = JSON.stringify({
+                users: state.users,
+                teams: state.teams,
+                leaders: state.leaders,
+                logs: state.logs
+            });
+            
+            if (dataStr !== currentStateStr) {
+                console.log("Database update detected from server, syncing...");
+                state.users = data.users || [];
+                state.teams = data.teams || [];
+                state.leaders = data.leaders || [];
+                state.logs = data.logs || [];
+                
+                // Re-populate dropdowns
+                populateDropdowns();
+                
+                // Re-render active views/lists
+                const activeView = document.querySelector('.view-section.active');
+                if (activeView) {
+                    if (activeView.id === 'admin-view') {
+                        renderAdminDashboard();
+                    } else if (activeView.id === 'leader-view') {
+                        renderLeaderDashboard();
+                    }
+                }
+            }
+        } catch (err) {
+            console.warn("Database polling sync failed", err);
+        }
+    }, 5000);
 }
 
 // --- Navigation / Routing ---
