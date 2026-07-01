@@ -19,20 +19,48 @@
     <div class="app-container">
 
         <!-- NFC Activation Overlay for Kiosk -->
-        <div id="nfc-activation-overlay" style="position: absolute; top:0; left:0; width:100%; height:100%; background: rgba(9, 10, 16, 0.95); backdrop-filter: blur(20px); z-index: 100; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 2rem; cursor: pointer;">
-            <div class="kiosk-logo-container" style="margin-bottom: 2rem;">
-                <img src="./images.png" alt="Logo" class="kiosk-logo" style="max-height: 80px;" onerror="this.src='https://via.placeholder.com/200x80/090a10/ffffff?text=Nothelle'">
+        <div id="nfc-activation-overlay" style="position: absolute; top:0; left:0; width:100%; height:100%; background: rgba(9, 10, 16, 0.96); backdrop-filter: blur(25px); z-index: 100; display: flex; align-items: center; justify-content: center; padding: 2rem;">
+            
+            <!-- State 1: Prompt Activation -->
+            <div id="nfc-prompt-state" style="display: flex; flex-direction: column; align-items: center; text-align: center;">
+                <div class="kiosk-logo-container" style="margin-bottom: 2rem;">
+                    <img src="./images.png" alt="Logo" class="kiosk-logo" style="max-height: 80px;" onerror="this.src='https://via.placeholder.com/200x80/090a10/ffffff?text=Nothelle'">
+                </div>
+                <div class="nfc-icon-wrapper" style="width: 100px; height: 100px; border-radius: 50%; border: 2px dashed var(--accent-indigo); display: flex; align-items: center; justify-content: center; color: var(--accent-indigo); margin-bottom: 2rem;">
+                    <i data-lucide="fingerprint" style="width: 48px; height: 48px;"></i>
+                </div>
+                <h2 style="font-size: 1.8rem; font-weight: 700; margin-bottom: 1rem; color: white;">NFC Sistemini Aktifleştir</h2>
+                <p style="color: var(--text-muted); max-width: 420px; font-size: 0.95rem; line-height: 1.6; margin-bottom: 2rem;">
+                    Tablet üzerindeki NFC okuyucunun aktifleşebilmesi için tarayıcı güvenlik politikası gereği ekrana bir kez dokunmanız gerekmektedir.
+                </p>
+                <button class="btn-primary" id="btn-activate-nfc" style="max-width: 250px;">
+                    <i data-lucide="play"></i> İzin Ver & Başlat
+                </button>
             </div>
-            <div class="nfc-icon-wrapper" style="width: 100px; height: 100px; border-radius: 50%; border: 2px dashed var(--accent-indigo); display: flex; align-items: center; justify-content: center; color: var(--accent-indigo); margin-bottom: 2rem;">
-                <i data-lucide="fingerprint" style="width: 48px; height: 48px;"></i>
+
+            <!-- State 2: Permission Blocked Guide -->
+            <div id="nfc-error-state" style="display: none; flex-direction: column; align-items: center; text-align: center; max-width: 460px;">
+                <div class="success-glow-circle glow-rose" style="width: 80px; height: 80px; font-size: 2rem; margin-bottom: 1.5rem;">
+                    <i data-lucide="shield-alert" style="width: 36px; height: 36px;"></i>
+                </div>
+                <h2 style="font-size: 1.6rem; font-weight: 700; margin-bottom: 1rem; color: white;">NFC İzni Engellendi</h2>
+                <p style="color: #fda4af; font-size: 0.9rem; line-height: 1.5; margin-bottom: 1.5rem; background: rgba(244, 63, 94, 0.1); border: 1px solid rgba(244, 63, 94, 0.2); padding: 0.75rem 1rem; border-radius: var(--radius-sm);">
+                    Tarayıcınızın NFC ayarı kapalı veya bu site için engellenmiş durumda.
+                </p>
+                <div style="text-align: left; background: rgba(255,255,255,0.02); border: 1px solid var(--glass-border); padding: 1.5rem; border-radius: var(--radius-md); width: 100%; margin-bottom: 2rem;">
+                    <h4 style="font-weight: 600; margin-bottom: 0.75rem; font-size: 0.95rem; color: var(--text-primary);">Nasıl İzin Verilir?</h4>
+                    <ol style="margin-left: 1.25rem; color: var(--text-muted); font-size: 0.85rem; line-height: 1.7; display: flex; flex-direction: column; gap: 0.5rem;">
+                        <li>Tarayıcı adres çubuğunun solundaki <b>Kilit (🔒) veya Ayarlar</b> simgesine dokunun.</li>
+                        <li>Açılan menüde <b>NFC</b> veya <b>Site Ayarları</b> seçeneğini bulun.</li>
+                        <li>NFC iznini <b>"İzin Ver" (Allow)</b> olarak değiştirin.</li>
+                        <li>Aşağıdaki butonla sayfayı yenileyerek tekrar deneyin.</li>
+                    </ol>
+                </div>
+                <button class="btn-primary" onclick="window.location.reload();" style="max-width: 200px;">
+                    <i data-lucide="refresh-cw"></i> Sayfayı Yenile
+                </button>
             </div>
-            <h2 style="font-size: 1.8rem; font-weight: 700; margin-bottom: 1rem; color: white;">NFC Sistemini Aktifleştir</h2>
-            <p style="color: var(--text-muted); max-width: 420px; font-size: 0.95rem; line-height: 1.6; margin-bottom: 2rem;">
-                Tablet üzerindeki NFC okuyucunun aktifleşebilmesi için tarayıcı güvenlik politikası gereği ekrana bir kez dokunmanız gerekmektedir.
-            </p>
-            <button class="btn-primary" style="max-width: 250px;">
-                <i data-lucide="play"></i> İzin Ver & Başlat
-            </button>
+
         </div>
 
         <!-- ==========================================================================

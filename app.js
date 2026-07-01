@@ -556,7 +556,14 @@ async function activateNfcReader() {
             
         } catch (error) {
             console.error("NFC tarama başlatılamadı:", error);
-            alert("NFC Başlatma Hatası: " + error.message + "\nLütfen HTTPS bağlantısı kullandığınızdan ve cihazda NFC'nin açık olduğundan emin olun.");
+            // Switch to error guide screen instead of simple alert
+            const promptState = document.getElementById('nfc-prompt-state');
+            const errorState = document.getElementById('nfc-error-state');
+            if (promptState) promptState.style.display = 'none';
+            if (errorState) errorState.style.display = 'flex';
+            if (typeof lucide !== 'undefined') {
+                lucide.createIcons();
+            }
         }
     } else {
         // If not supported, hide overlay automatically
@@ -1019,9 +1026,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const overlay = document.getElementById('nfc-activation-overlay');
         if (overlay) overlay.style.display = 'none';
     } else {
-        const overlay = document.getElementById('nfc-activation-overlay');
-        if (overlay) {
-            overlay.addEventListener('click', activateNfcReader);
+        const btnActivate = document.getElementById('btn-activate-nfc');
+        if (btnActivate) {
+            btnActivate.addEventListener('click', activateNfcReader);
         }
     }
 
