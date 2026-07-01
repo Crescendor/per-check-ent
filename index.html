@@ -1,16 +1,14 @@
 <!DOCTYPE html>
 <html lang="tr">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ofis Giriş & Yoklama Paneli</title>
+    <title>Nothelle - Ofis Giriş & Yoklama Paneli</title>
     <!-- Lucide Icons CDN -->
     <script src="https://unpkg.com/lucide@latest"></script>
     <!-- Custom Style Sheet -->
     <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
 
     <!-- Ambient Glowing Background Elements -->
@@ -28,13 +26,12 @@
             <button id="to-login-btn" class="kiosk-admin-btn" title="Yönetici/Lider Girişi">
                 <i data-lucide="lock"></i>
             </button>
-
+            
             <div class="kiosk-wrapper">
                 <div class="kiosk-logo-container">
-                    <img src="./images.png" alt="Logo" class="kiosk-logo"
-                        onerror="this.src='https://via.placeholder.com/200x80/090a10/ffffff?text=Ofis+Giris'">
+                    <img src="./images.png" alt="Nothelle Logo" class="kiosk-logo" onerror="this.src='https://via.placeholder.com/200x80/090a10/ffffff?text=Nothelle+Izmir'">
                 </div>
-
+                
                 <div class="kiosk-card glass-panel">
                     <div class="nfc-pulse-container" id="kiosk-nfc-pulse">
                         <div class="nfc-ring"></div>
@@ -44,10 +41,9 @@
                             <i data-lucide="rss" style="width: 48px; height: 48px;"></i>
                         </div>
                     </div>
-
-                    <h1 class="kiosk-title">Ofis Giriş Paneli</h1>
-                    <p class="kiosk-subtitle">Giriş veya çıkış yapmak için kartınızı tabletin arkasındaki okuyucuya
-                        yaklaştırın.</p>
+                    
+                    <h1 class="kiosk-title">Nothelle Giriş Paneli</h1>
+                    <p class="kiosk-subtitle">Giriş veya çıkış yapmak için kartınızı tabletin arkasındaki okuyucuya yaklaştırın.</p>
                 </div>
             </div>
         </section>
@@ -59,35 +55,32 @@
             <button id="login-back-btn" class="login-back-btn">
                 <i data-lucide="arrow-left"></i> Kiosk Moduna Dön
             </button>
-
+            
             <div class="login-wrapper">
                 <div class="login-card glass-panel">
                     <div class="login-header">
-                        <img src="./images.png" alt="Logo" class="login-logo"
-                            onerror="this.src='https://via.placeholder.com/150x60/090a10/ffffff?text=Logo'">
+                        <img src="./images.png" alt="Nothelle Logo" class="login-logo" onerror="this.src='https://via.placeholder.com/150x60/090a10/ffffff?text=Nothelle'">
                         <h2 class="login-title">Panel Girişi</h2>
                         <p class="login-subtitle">Yönetici veya Takım Lideri olarak devam edin</p>
                     </div>
-
+                    
                     <form id="login-form">
                         <div class="form-group">
                             <label class="form-label" for="login-username">Kullanıcı Adı</label>
                             <div class="input-wrapper">
                                 <i data-lucide="user" class="input-icon"></i>
-                                <input type="text" id="login-username" class="form-input"
-                                    placeholder="admin veya lider_kullanici" required autocomplete="username">
+                                <input type="text" id="login-username" class="form-input" placeholder="admin veya lider_kullanici" required autocomplete="username">
                             </div>
                         </div>
-
+                        
                         <div class="form-group">
                             <label class="form-label" for="login-password">Şifre</label>
                             <div class="input-wrapper">
                                 <i data-lucide="key" class="input-icon"></i>
-                                <input type="password" id="login-password" class="form-input" placeholder="••••••••"
-                                    required autocomplete="current-password">
+                                <input type="password" id="login-password" class="form-input" placeholder="••••••••" required autocomplete="current-password">
                             </div>
                         </div>
-
+                        
                         <button type="submit" class="btn-primary">
                             <i data-lucide="log-in"></i> Giriş Yap
                         </button>
@@ -105,12 +98,10 @@
                 <aside class="sidebar">
                     <div>
                         <div class="sidebar-logo-section">
-                            <img src="./images.png" alt="Logo" class="sidebar-logo"
-                                onerror="this.src='https://via.placeholder.com/120x50/090a10/ffffff?text=Logo'">
-                            <span
-                                style="font-weight: 700; font-size: 1.1rem; color: #a5b4fc; letter-spacing: 0.5px;">ADMIN</span>
+                            <img src="./images.png" alt="Nothelle Logo" class="sidebar-logo" onerror="this.src='https://via.placeholder.com/120x50/090a10/ffffff?text=Nothelle'">
+                            <span style="font-weight: 700; font-size: 1.1rem; color: #a5b4fc; letter-spacing: 0.5px;">ADMIN</span>
                         </div>
-
+                        
                         <nav class="sidebar-nav">
                             <div class="nav-item active" data-target-tab="admin-users-tab">
                                 <i data-lucide="users"></i>
@@ -130,7 +121,7 @@
                             </div>
                         </nav>
                     </div>
-
+                    
                     <div class="sidebar-footer">
                         <div class="user-profile-widget">
                             <div class="user-avatar" id="admin-avatar">A</div>
@@ -150,8 +141,7 @@
                     <header class="dashboard-header">
                         <div class="dashboard-title-container">
                             <h2 class="dashboard-main-title" id="admin-header-title">Çalışan Yönetimi</h2>
-                            <p class="dashboard-main-subtitle" id="admin-header-subtitle">Ofis çalışanları ve kart
-                                eşleştirme işlemlerini yönetin</p>
+                            <p class="dashboard-main-subtitle" id="admin-header-subtitle">Ofis çalışanları ve kart eşleştirme işlemlerini yönetin</p>
                         </div>
                         <div class="header-actions">
                             <button class="btn-secondary" id="admin-to-kiosk-btn">
@@ -159,7 +149,7 @@
                             </button>
                         </div>
                     </header>
-
+                    
                     <div class="dashboard-body">
                         <!-- Stats Widget -->
                         <div class="stat-grid">
@@ -172,7 +162,7 @@
                                     <span class="stat-label">Toplam Çalışan</span>
                                 </div>
                             </div>
-
+                            
                             <div class="stat-card glass-panel">
                                 <div class="stat-icon-box icon-emerald">
                                     <i data-lucide="check-circle-2"></i>
@@ -182,7 +172,7 @@
                                     <span class="stat-label">Şu An Ofiste</span>
                                 </div>
                             </div>
-
+                            
                             <div class="stat-card glass-panel">
                                 <div class="stat-icon-box icon-blue">
                                     <i data-lucide="layers"></i>
@@ -218,7 +208,7 @@
                                     </button>
                                 </div>
                             </div>
-
+                            
                             <div class="table-responsive">
                                 <table class="glass-table">
                                     <thead>
@@ -246,7 +236,7 @@
                                     <i data-lucide="plus"></i> Yeni Takım Ekle
                                 </button>
                             </div>
-
+                            
                             <div class="table-responsive">
                                 <table class="glass-table">
                                     <thead>
@@ -272,7 +262,7 @@
                                     <i data-lucide="plus"></i> Yeni Lider Ekle
                                 </button>
                             </div>
-
+                            
                             <div class="table-responsive">
                                 <table class="glass-table">
                                     <thead>
@@ -293,12 +283,11 @@
                         <div id="admin-logs-tab" class="tab-content">
                             <div class="panel-top-bar">
                                 <h3 class="panel-title">Son Hareketler</h3>
-                                <button class="btn-secondary" id="btn-clear-logs"
-                                    style="color: var(--accent-rose); border-color: rgba(244, 63, 94, 0.2);">
+                                <button class="btn-secondary" id="btn-clear-logs" style="color: var(--accent-rose); border-color: rgba(244, 63, 94, 0.2);">
                                     <i data-lucide="trash-2"></i> Logları Temizle
                                 </button>
                             </div>
-
+                            
                             <div class="table-responsive">
                                 <table class="glass-table">
                                     <thead>
@@ -330,12 +319,10 @@
                 <aside class="sidebar">
                     <div>
                         <div class="sidebar-logo-section">
-                            <img src="./images.png" alt="Logo" class="sidebar-logo"
-                                onerror="this.src='https://via.placeholder.com/120x50/090a10/ffffff?text=Logo'">
-                            <span
-                                style="font-weight: 700; font-size: 1.1rem; color: var(--accent-indigo); letter-spacing: 0.5px;">LİDER</span>
+                            <img src="./images.png" alt="Nothelle Logo" class="sidebar-logo" onerror="this.src='https://via.placeholder.com/120x50/090a10/ffffff?text=Nothelle'">
+                            <span style="font-weight: 700; font-size: 1.1rem; color: var(--accent-indigo); letter-spacing: 0.5px;">LİDER</span>
                         </div>
-
+                        
                         <nav class="sidebar-nav">
                             <div class="nav-item active">
                                 <i data-lucide="layout-grid"></i>
@@ -343,7 +330,7 @@
                             </div>
                         </nav>
                     </div>
-
+                    
                     <div class="sidebar-footer">
                         <div class="user-profile-widget">
                             <div class="user-avatar" id="leader-avatar">TL</div>
@@ -363,8 +350,7 @@
                     <header class="dashboard-header">
                         <div class="dashboard-title-container">
                             <h2 class="dashboard-main-title" id="leader-team-title">Yazılım Takımı Durumu</h2>
-                            <p class="dashboard-main-subtitle">Takımınızın anlık ofiste olup olmadığını canlı takip edin
-                            </p>
+                            <p class="dashboard-main-subtitle">Takımınızın anlık ofiste olup olmadığını canlı takip edin</p>
                         </div>
                         <div class="header-actions">
                             <button class="btn-secondary" id="leader-to-kiosk-btn">
@@ -372,7 +358,7 @@
                             </button>
                         </div>
                     </header>
-
+                    
                     <div class="dashboard-body">
                         <!-- Stats Summary -->
                         <div class="stat-grid">
@@ -385,7 +371,7 @@
                                     <span class="stat-label">Takım Üyesi</span>
                                 </div>
                             </div>
-
+                            
                             <div class="stat-card glass-panel">
                                 <div class="stat-icon-box icon-emerald">
                                     <i data-lucide="check-circle-2"></i>
@@ -395,7 +381,7 @@
                                     <span class="stat-label">Ofiste Olanlar</span>
                                 </div>
                             </div>
-
+                            
                             <div class="stat-card glass-panel">
                                 <div class="stat-icon-box icon-rose">
                                     <i data-lucide="x-circle"></i>
@@ -429,12 +415,12 @@
             <div class="success-glow-circle" id="welcome-glow-circle">
                 <i data-lucide="check" id="welcome-icon" style="width: 50px; height: 50px;"></i>
             </div>
-
+            
             <div class="welcome-status-tag" id="welcome-status-tag">GİRİŞ YAPILDI</div>
-
+            
             <p class="welcome-msg" id="welcome-msg-text">Ofise Hoş Geldin</p>
             <h1 class="welcome-username" id="welcome-user-name">Furkan Yalçın</h1>
-
+            
             <div class="welcome-details">
                 <span id="welcome-user-team">
                     <i data-lucide="layers" style="color: var(--accent-indigo);"></i> Yazılım Takımı
@@ -443,7 +429,7 @@
                     <i data-lucide="clock" style="color: var(--accent-blue);"></i> 09:32
                 </span>
             </div>
-
+            
             <!-- Circular countdown timer progress bar -->
             <div class="countdown-container" id="welcome-close-btn" style="cursor: pointer;">
                 <svg class="countdown-svg">
@@ -452,7 +438,7 @@
                 </svg>
                 <div class="countdown-text" id="countdown-number">7</div>
             </div>
-
+            
             <p class="welcome-close-hint">Kapatmak için ekrana tıklayabilirsiniz</p>
         </div>
     </div>
@@ -460,7 +446,7 @@
     <!-- ==========================================================================
          6. MODALS
          ========================================================================== -->
-
+         
     <!-- 6.1. Add/Edit Employee Modal -->
     <div class="modal-overlay" id="modal-employee">
         <div class="modal-card glass-panel">
@@ -475,13 +461,11 @@
                 <div class="modal-body">
                     <div class="form-group">
                         <label class="form-label" for="employee-name">Ad</label>
-                        <input type="text" id="employee-name" class="form-input" style="padding-left: 1rem;"
-                            placeholder="Örn: Ahmet" required>
+                        <input type="text" id="employee-name" class="form-input" style="padding-left: 1rem;" placeholder="Örn: Ahmet" required>
                     </div>
                     <div class="form-group">
                         <label class="form-label" for="employee-surname">Soyad</label>
-                        <input type="text" id="employee-surname" class="form-input" style="padding-left: 1rem;"
-                            placeholder="Örn: Yılmaz" required>
+                        <input type="text" id="employee-surname" class="form-input" style="padding-left: 1rem;" placeholder="Örn: Yılmaz" required>
                     </div>
                     <div class="form-group">
                         <label class="form-label" for="employee-team">Takım</label>
@@ -494,8 +478,7 @@
                     </div>
                     <div class="form-group">
                         <label class="form-label" for="employee-title">Unvan</label>
-                        <input type="text" id="employee-title" class="form-input" style="padding-left: 1rem;"
-                            placeholder="Örn: Senior Frontend Developer" required>
+                        <input type="text" id="employee-title" class="form-input" style="padding-left: 1rem;" placeholder="Örn: Senior Frontend Developer" required>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -519,8 +502,7 @@
                 <div class="modal-body">
                     <div class="form-group">
                         <label class="form-label" for="team-name">Takım Adı</label>
-                        <input type="text" id="team-name" class="form-input" style="padding-left: 1rem;"
-                            placeholder="Örn: Mobil Geliştirme" required>
+                        <input type="text" id="team-name" class="form-input" style="padding-left: 1rem;" placeholder="Örn: Mobil Geliştirme" required>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -545,13 +527,11 @@
                 <div class="modal-body">
                     <div class="form-group">
                         <label class="form-label" for="leader-username">Kullanıcı Adı</label>
-                        <input type="text" id="leader-username" class="form-input" style="padding-left: 1rem;"
-                            placeholder="Örn: ahmet_lider" required>
+                        <input type="text" id="leader-username" class="form-input" style="padding-left: 1rem;" placeholder="Örn: ahmet_lider" required>
                     </div>
                     <div class="form-group">
                         <label class="form-label" for="leader-password">Giriş Şifresi</label>
-                        <input type="password" id="leader-password" class="form-input" style="padding-left: 1rem;"
-                            placeholder="Şifre belirleyin" required autocomplete="new-password">
+                        <input type="password" id="leader-password" class="form-input" style="padding-left: 1rem;" placeholder="Şifre belirleyin" required autocomplete="new-password">
                     </div>
                     <div class="form-group">
                         <label class="form-label" for="leader-team">Sorumlu Olduğu Takım</label>
@@ -589,10 +569,8 @@
                 <h4 class="nfc-scan-title" id="nfc-scan-user-name">Kullanıcı: Ahmet Yılmaz</h4>
                 <p class="nfc-scan-desc">
                     Lütfen kartı tabletin arkasındaki NFC okuyucusuna yaklaştırın.<br>
-                    <span
-                        style="color: var(--accent-amber); font-weight: 500; font-size: 0.85rem; margin-top: 0.5rem; display: inline-block;">
-                        (Alternatif: Ekranın altındaki 'Sanal NFC Kartı' simülatöründen bir kart seçerek
-                        eşleştirebilirsiniz.)
+                    <span style="color: var(--accent-amber); font-weight: 500; font-size: 0.85rem; margin-top: 0.5rem; display: inline-block;">
+                        (Alternatif: Ekranın altındaki 'Sanal NFC Kartı' simülatöründen bir kart seçerek eşleştirebilirsiniz.)
                     </span>
                 </p>
             </div>
@@ -624,10 +602,9 @@
             <div class="card-simulator-grid" id="sim-cards-list">
                 <!-- Render existing cards with quick buttons to trigger them -->
             </div>
-
+            
             <div style="border-top: 1px solid var(--glass-border); padding-top: 1rem;">
-                <span class="simulator-subtitle" style="display: block; margin-bottom: 0.5rem;">Yeni / Bilinmeyen Kart
-                    Okut</span>
+                <span class="simulator-subtitle" style="display: block; margin-bottom: 0.5rem;">Yeni / Bilinmeyen Kart Okut</span>
                 <div class="custom-card-input-group">
                     <input type="text" id="sim-custom-uid" placeholder="Örn: 04:DE:8F:A2" value="04:DE:8F:A2">
                     <button class="btn-sim-trigger" id="btn-sim-trigger-custom">
@@ -641,5 +618,4 @@
     <!-- Core Javascript Code -->
     <script src="app.js"></script>
 </body>
-
 </html>

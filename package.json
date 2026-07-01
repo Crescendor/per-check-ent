@@ -1,7 +1,7 @@
 {
-  "name": "ofis-yoklama",
+  "name": "nothelle-yoklama",
   "version": "1.0.0",
-  "description": "Ofis Giriş & Yoklama Paneli",
+  "description": "Nothelle İzmir Ofis Giriş & Yoklama Paneli",
   "main": "index.html",
   "scripts": {
     "dev": "vite",
@@ -15,7 +15,7 @@
     "attendance",
     "glassmorphism"
   ],
-  "author": "Developer",
+  "author": "Nothelle Team",
   "license": "ISC",
   "devDependencies": {
     "vite": "^5.0.0"

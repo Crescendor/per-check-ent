@@ -1,5 +1,5 @@
 /* ==========================================================================
-   Ofis Yoklama - Style Sheet (Dark Glassmorphism Design System)
+   Nothelle Yoklama - Style Sheet (Dark Glassmorphism Design System)
    ========================================================================== */
 
 /* Import Google Font - Outfit */
@@ -14,12 +14,12 @@
     --accent-emerald: #10b981;
     --accent-rose: #f43f5e;
     --accent-amber: #f59e0b;
-
+    
     /* Text Colors */
     --text-primary: #f8fafc;
     --text-muted: #94a3b8;
     --text-dark: #475569;
-
+    
     /* Glassmorphism Presets */
     --glass-bg: rgba(20, 23, 36, 0.65);
     --glass-bg-hover: rgba(255, 255, 255, 0.08);
@@ -27,12 +27,12 @@
     --glass-border-focus: rgba(99, 102, 241, 0.4);
     --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
     --glass-blur: blur(16px);
-
+    
     /* Transitions */
     --transition-fast: 0.2s ease;
     --transition-normal: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     --transition-slow: 0.5s ease;
-
+    
     /* Border Radius */
     --radius-sm: 8px;
     --radius-md: 14px;
@@ -55,16 +55,13 @@
     width: 6px;
     height: 6px;
 }
-
 ::-webkit-scrollbar-track {
     background: transparent;
 }
-
 ::-webkit-scrollbar-thumb {
     background: rgba(255, 255, 255, 0.1);
     border-radius: var(--radius-full);
 }
-
 ::-webkit-scrollbar-thumb:hover {
     background: rgba(255, 255, 255, 0.25);
 }
@@ -116,13 +113,8 @@ body {
 }
 
 @keyframes floatLight {
-    0% {
-        transform: translate(0, 0) scale(1);
-    }
-
-    100% {
-        transform: translate(100px, 50px) scale(1.1);
-    }
+    0% { transform: translate(0, 0) scale(1); }
+    100% { transform: translate(100px, 50px) scale(1.1); }
 }
 
 /* Glassmorphism Panel Helper Class */
@@ -190,17 +182,8 @@ body {
 }
 
 @keyframes pulseLogo {
-
-    0%,
-    100% {
-        transform: scale(1);
-        filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.15));
-    }
-
-    50% {
-        transform: scale(1.03);
-        filter: drop-shadow(0 0 25px rgba(255, 255, 255, 0.3));
-    }
+    0%, 100% { transform: scale(1); filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.15)); }
+    50% { transform: scale(1.03); filter: drop-shadow(0 0 25px rgba(255, 255, 255, 0.3)); }
 }
 
 .kiosk-card {
@@ -226,13 +209,8 @@ body {
 }
 
 @keyframes scanLine {
-    0% {
-        left: -100%;
-    }
-
-    100% {
-        left: 100%;
-    }
+    0% { left: -100%; }
+    100% { left: 100%; }
 }
 
 .nfc-pulse-container {
@@ -286,19 +264,9 @@ body {
 }
 
 @keyframes nfcPulse {
-    0% {
-        transform: scale(0.6);
-        opacity: 0;
-    }
-
-    50% {
-        opacity: 0.5;
-    }
-
-    100% {
-        transform: scale(1.4);
-        opacity: 0;
-    }
+    0% { transform: scale(0.6); opacity: 0; }
+    50% { opacity: 0.5; }
+    100% { transform: scale(1.4); opacity: 0; }
 }
 
 .kiosk-title {
@@ -419,23 +387,13 @@ body {
 }
 
 @keyframes successPulse {
-    0% {
-        box-shadow: 0 0 25px rgba(16, 185, 129, 0.2);
-    }
-
-    100% {
-        box-shadow: 0 0 45px rgba(16, 185, 129, 0.5);
-    }
+    0% { box-shadow: 0 0 25px rgba(16, 185, 129, 0.2); }
+    100% { box-shadow: 0 0 45px rgba(16, 185, 129, 0.5); }
 }
 
 @keyframes errorPulse {
-    0% {
-        box-shadow: 0 0 25px rgba(244, 63, 94, 0.2);
-    }
-
-    100% {
-        box-shadow: 0 0 45px rgba(244, 63, 94, 0.5);
-    }
+    0% { box-shadow: 0 0 25px rgba(244, 63, 94, 0.2); }
+    100% { box-shadow: 0 0 45px rgba(244, 63, 94, 0.5); }
 }
 
 .welcome-status-tag {
@@ -521,8 +479,7 @@ body {
     fill: none;
     stroke-width: 4px;
     stroke-linecap: round;
-    stroke-dasharray: 176;
-    /* 2 * PI * r (r=28) */
+    stroke-dasharray: 176; /* 2 * PI * r (r=28) */
     stroke-dashoffset: 0;
     transition: stroke-dashoffset 0.1s linear;
 }
@@ -958,15 +915,8 @@ body {
 }
 
 @keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(10px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
 /* Content Header with Add Buttons */
@@ -1444,13 +1394,8 @@ body {
 }
 
 @keyframes rotateDashed {
-    0% {
-        transform: rotate(0deg);
-    }
-
-    100% {
-        transform: rotate(360deg);
-    }
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
 }
 
 .nfc-scan-title {
@@ -1497,8 +1442,7 @@ body {
 
 .simulator-panel {
     position: fixed;
-    bottom: -420px;
-    /* Hidden by default */
+    bottom: -420px; /* Hidden by default */
     left: 2rem;
     width: 380px;
     max-height: 400px;
@@ -1658,7 +1602,7 @@ body {
     .dashboard-container {
         flex-direction: column;
     }
-
+    
     .sidebar {
         width: 100%;
         height: auto;
@@ -1669,39 +1613,37 @@ body {
         justify-content: space-between;
         padding: 1rem 1.5rem;
     }
-
+    
     .sidebar-logo-section {
         margin-bottom: 0;
     }
-
+    
     .sidebar-nav {
         flex-direction: row;
         align-items: center;
         gap: 0.25rem;
         flex: initial;
     }
-
+    
     .nav-item {
         padding: 0.6rem 0.85rem;
         font-size: 0.85rem;
         gap: 0.5rem;
     }
-
+    
     .nav-item span {
-        display: none;
-        /* Hide text on smaller screens */
+        display: none; /* Hide text on smaller screens */
     }
-
+    
     .sidebar-footer {
-        display: none;
-        /* Hide footer or adapt */
+        display: none; /* Hide footer or adapt */
     }
-
+    
     .dashboard-header {
         padding: 0 1.5rem;
         height: 70px;
     }
-
+    
     .dashboard-body {
         padding: 1.5rem;
     }
@@ -1711,15 +1653,15 @@ body {
     .kiosk-card {
         padding: 2rem 1.5rem;
     }
-
+    
     .kiosk-title {
         font-size: 1.5rem;
     }
-
+    
     .welcome-username {
         font-size: 2.2rem;
     }
-
+    
     .welcome-container {
         padding: 3rem 1.5rem;
     }
