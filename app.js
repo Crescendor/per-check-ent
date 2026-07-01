@@ -531,8 +531,8 @@ function handleNfcScan(uid) {
 
 
 
-// Web NFC API integration (NDEFReader)
-async function startWebNfcReader() {
+// Web NFC API activation via user gesture
+async function activateNfcReader() {
     if ('NDEFReader' in window) {
         try {
             const ndef = new NDEFReader();
@@ -540,17 +540,28 @@ async function startWebNfcReader() {
             console.log("Web NFC taraması başarıyla başlatıldı.");
             
             ndef.addEventListener("readingerror", () => {
-                console.warn("NFC kartı okunamadı. Lütfen tekrar yaklaştırın.");
+                alert("NFC kartı okunamadı. Lütfen tekrar yaklaştırın.");
             });
             
             ndef.addEventListener("reading", ({ serialNumber }) => {
                 handleNfcScan(serialNumber);
             });
+            
+            // Success audio chime
+            playBeep('in');
+            
+            // Hide activation overlay
+            const overlay = document.getElementById('nfc-activation-overlay');
+            if (overlay) overlay.style.display = 'none';
+            
         } catch (error) {
-            console.warn("Web NFC API tarama başlatılamadı. Kiosk simülatörünü kullanabilirsiniz.", error);
+            console.error("NFC tarama başlatılamadı:", error);
+            alert("NFC Başlatma Hatası: " + error.message + "\nLütfen HTTPS bağlantısı kullandığınızdan ve cihazda NFC'nin açık olduğundan emin olun.");
         }
     } else {
-        console.log("Bu tarayıcı veya cihaz Web NFC API desteklemiyor. Simülatör devrede.");
+        // If not supported, hide overlay automatically
+        const overlay = document.getElementById('nfc-activation-overlay');
+        if (overlay) overlay.style.display = 'none';
     }
 }
 
@@ -1003,8 +1014,30 @@ document.addEventListener('DOMContentLoaded', () => {
     // 3. Initialize dynamic dropdown selections
     populateDropdowns();
     
-    // 4. Start NFC reading scan (if Web NFC supported)
-    startWebNfcReader();
+    // 4. Start NFC reading scan via activation overlay (User Gesture requirement)
+    if (!('NDEFReader' in window)) {
+        const overlay = document.getElementById('nfc-activation-overlay');
+        if (overlay) overlay.style.display = 'none';
+    } else {
+        const overlay = document.getElementById('nfc-activation-overlay');
+        if (overlay) {
+            overlay.addEventListener('click', activateNfcReader);
+        }
+    }
+
+    // 4.1. Manual Card ID Link Submission Hook
+    const btnSaveManualNfc = document.getElementById('btn-save-manual-nfc');
+    if (btnSaveManualNfc) {
+        btnSaveManualNfc.addEventListener('click', () => {
+            const manualUid = document.getElementById('manual-card-uid').value.trim().toUpperCase();
+            if (manualUid) {
+                handleNfcScan(manualUid);
+                document.getElementById('manual-card-uid').value = '';
+            } else {
+                alert("Lütfen geçerli bir Kart ID girin.");
+            }
+        });
+    }
     
     // 5. Setup admin panel tabs routing
     setupAdminTabs();

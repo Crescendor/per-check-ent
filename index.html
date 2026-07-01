@@ -18,6 +18,23 @@
 
     <div class="app-container">
 
+        <!-- NFC Activation Overlay for Kiosk -->
+        <div id="nfc-activation-overlay" style="position: absolute; top:0; left:0; width:100%; height:100%; background: rgba(9, 10, 16, 0.95); backdrop-filter: blur(20px); z-index: 100; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 2rem; cursor: pointer;">
+            <div class="kiosk-logo-container" style="margin-bottom: 2rem;">
+                <img src="./images.png" alt="Logo" class="kiosk-logo" style="max-height: 80px;" onerror="this.src='https://via.placeholder.com/200x80/090a10/ffffff?text=Nothelle'">
+            </div>
+            <div class="nfc-icon-wrapper" style="width: 100px; height: 100px; border-radius: 50%; border: 2px dashed var(--accent-indigo); display: flex; align-items: center; justify-content: center; color: var(--accent-indigo); margin-bottom: 2rem;">
+                <i data-lucide="fingerprint" style="width: 48px; height: 48px;"></i>
+            </div>
+            <h2 style="font-size: 1.8rem; font-weight: 700; margin-bottom: 1rem; color: white;">NFC Sistemini Aktifleştir</h2>
+            <p style="color: var(--text-muted); max-width: 420px; font-size: 0.95rem; line-height: 1.6; margin-bottom: 2rem;">
+                Tablet üzerindeki NFC okuyucunun aktifleşebilmesi için tarayıcı güvenlik politikası gereği ekrana bir kez dokunmanız gerekmektedir.
+            </p>
+            <button class="btn-primary" style="max-width: 250px;">
+                <i data-lucide="play"></i> İzin Ver & Başlat
+            </button>
+        </div>
+
         <!-- ==========================================================================
              1. KIOSK VIEW (WELCOME SCREEN)
              ========================================================================== -->
@@ -570,6 +587,15 @@
                 <p class="nfc-scan-desc">
                     Lütfen kartı tabletin arkasındaki NFC okuyucusuna yaklaştırın.
                 </p>
+                
+                <!-- Manuel Giriş Seçeneği -->
+                <div style="margin-top: 1.5rem; border-top: 1px solid var(--glass-border); padding-top: 1.5rem; width: 100%;">
+                    <label class="form-label" style="text-align: left; margin-bottom: 0.5rem; font-size: 0.85rem;">Manuel Kart ID Girişi</label>
+                    <div class="custom-card-input-group" style="display: flex; gap: 0.5rem;">
+                        <input type="text" id="manual-card-uid" class="form-input" style="padding-left: 1rem; font-family: monospace;" placeholder="Örn: 04:A1:B2:C3">
+                        <button type="button" class="btn-primary" id="btn-save-manual-nfc" style="width: auto; padding: 0 1.25rem; font-size: 0.85rem;">Kaydet</button>
+                    </div>
+                </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn-secondary" onclick="cancelNfcScan()">İptal Et</button>
