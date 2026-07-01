@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nothelle - Ofis Giriş & Yoklama Paneli</title>
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Custom Style Sheet -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Ambient Glowing Background Elements -->
+    <div class="bg-ambient-light bg-light-1"></div>
+    <div class="bg-ambient-light bg-light-2"></div>
+    <div class="bg-ambient-light bg-light-3"></div>
+
+    <div class="app-container">
+
+        <!-- ==========================================================================
+             1. KIOSK VIEW (WELCOME SCREEN)
+             ========================================================================== -->
+        <section id="kiosk-view" class="view-section active">
+            <!-- Lock Icon for Admin/Leader Login -->
+            <button id="to-login-btn" class="kiosk-admin-btn" title="Yönetici/Lider Girişi">
+                <i data-lucide="lock"></i>
+            </button>
+            
+            <div class="kiosk-wrapper">
+                <div class="kiosk-logo-container">
+                    <img src="./images.png" alt="Nothelle Logo" class="kiosk-logo" onerror="this.src='https://via.placeholder.com/200x80/090a10/ffffff?text=Nothelle+Izmir'">
+                </div>
+                
+                <div class="kiosk-card glass-panel">
+                    <div class="nfc-pulse-container" id="kiosk-nfc-pulse">
+                        <div class="nfc-ring"></div>
+                        <div class="nfc-ring"></div>
+                        <div class="nfc-ring"></div>
+                        <div class="nfc-icon-wrapper">
+                            <i data-lucide="rss" style="width: 48px; height: 48px;"></i>
+                        </div>
+                    </div>
+                    
+                    <h1 class="kiosk-title">Nothelle Giriş Paneli</h1>
+                    <p class="kiosk-subtitle">Giriş veya çıkış yapmak için kartınızı tabletin arkasındaki okuyucuya yaklaştırın.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==========================================================================
+             2. LOGIN VIEW
+             ========================================================================== -->
+        <section id="login-view" class="view-section">
+            <button id="login-back-btn" class="login-back-btn">
+                <i data-lucide="arrow-left"></i> Kiosk Moduna Dön
+            </button>
+            
+            <div class="login-wrapper">
+                <div class="login-card glass-panel">
+                    <div class="login-header">
+                        <img src="./images.png" alt="Nothelle Logo" class="login-logo" onerror="this.src='https://via.placeholder.com/150x60/090a10/ffffff?text=Nothelle'">
+                        <h2 class="login-title">Panel Girişi</h2>
+                        <p class="login-subtitle">Yönetici veya Takım Lideri olarak devam edin</p>
+                    </div>
+                    
+                    <form id="login-form">
+                        <div class="form-group">
+                            <label class="form-label" for="login-username">Kullanıcı Adı</label>
+                            <div class="input-wrapper">
+                                <i data-lucide="user" class="input-icon"></i>
+                                <input type="text" id="login-username" class="form-input" placeholder="admin veya lider_kullanici" required autocomplete="username">
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label" for="login-password">Şifre</label>
+                            <div class="input-wrapper">
+                                <i data-lucide="key" class="input-icon"></i>
+                                <input type="password" id="login-password" class="form-input" placeholder="••••••••" required autocomplete="current-password">
+                            </div>
+                        </div>
+                        
+                        <button type="submit" class="btn-primary">
+                            <i data-lucide="log-in"></i> Giriş Yap
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==========================================================================
+             3. ADMIN DASHBOARD VIEW
+             ========================================================================== -->
+        <section id="admin-view" class="view-section">
+            <div class="dashboard-container">
+                <!-- Sidebar -->
+                <aside class="sidebar">
+                    <div>
+                        <div class="sidebar-logo-section">
+                            <img src="./images.png" alt="Nothelle Logo" class="sidebar-logo" onerror="this.src='https://via.placeholder.com/120x50/090a10/ffffff?text=Nothelle'">
+                            <span style="font-weight: 700; font-size: 1.1rem; color: #a5b4fc; letter-spacing: 0.5px;">ADMIN</span>
+                        </div>
+                        
+                        <nav class="sidebar-nav">
+                            <div class="nav-item active" data-target-tab="admin-users-tab">
+                                <i data-lucide="users"></i>
+                                <span>Çalışanlar</span>
+                            </div>
+                            <div class="nav-item" data-target-tab="admin-teams-tab">
+                                <i data-lucide="layers"></i>
+                                <span>Takımlar</span>
+                            </div>
+                            <div class="nav-item" data-target-tab="admin-leaders-tab">
+                                <i data-lucide="shield"></i>
+                                <span>Takım Liderleri</span>
+                            </div>
+                            <div class="nav-item" data-target-tab="admin-logs-tab">
+                                <i data-lucide="clock"></i>
+                                <span>Giriş/Çıkış Logları</span>
+                            </div>
+                        </nav>
+                    </div>
+                    
+                    <div class="sidebar-footer">
+                        <div class="user-profile-widget">
+                            <div class="user-avatar" id="admin-avatar">A</div>
+                            <div class="user-details">
+                                <span class="profile-name">Yönetici</span>
+                                <span class="profile-role">Genel Admin</span>
+                            </div>
+                        </div>
+                        <button class="btn-logout" id="admin-logout-btn">
+                            <i data-lucide="log-out"></i> Çıkış Yap
+                        </button>
+                    </div>
+                </aside>
+
+                <!-- Main Content Area -->
+                <main class="dashboard-main">
+                    <header class="dashboard-header">
+                        <div class="dashboard-title-container">
+                            <h2 class="dashboard-main-title" id="admin-header-title">Çalışan Yönetimi</h2>
+                            <p class="dashboard-main-subtitle" id="admin-header-subtitle">Ofis çalışanları ve kart eşleştirme işlemlerini yönetin</p>
+                        </div>
+                        <div class="header-actions">
+                            <button class="btn-secondary" id="admin-to-kiosk-btn">
+                                <i data-lucide="monitor"></i> Kiosk Modu
+                            </button>
+                        </div>
+                    </header>
+                    
+                    <div class="dashboard-body">
+                        <!-- Stats Widget -->
+                        <div class="stat-grid">
+                            <div class="stat-card glass-panel">
+                                <div class="stat-icon-box icon-indigo">
+                                    <i data-lucide="users"></i>
+                                </div>
+                                <div class="stat-info">
+                                    <span class="stat-value" id="stat-total-users">0</span>
+                                    <span class="stat-label">Toplam Çalışan</span>
+                                </div>
+                            </div>
+                            
+                            <div class="stat-card glass-panel">
+                                <div class="stat-icon-box icon-emerald">
+                                    <i data-lucide="check-circle-2"></i>
+                                </div>
+                                <div class="stat-info">
+                                    <span class="stat-value" id="stat-present-users">0</span>
+                                    <span class="stat-label">Şu An Ofiste</span>
+                                </div>
+                            </div>
+                            
+                            <div class="stat-card glass-panel">
+                                <div class="stat-icon-box icon-blue">
+                                    <i data-lucide="layers"></i>
+                                </div>
+                                <div class="stat-info">
+                                    <span class="stat-value" id="stat-total-teams">0</span>
+                                    <span class="stat-label">Aktif Takım</span>
+                                </div>
+                            </div>
+
+                            <div class="stat-card glass-panel">
+                                <div class="stat-icon-box icon-amber">
+                                    <i data-lucide="contact-2"></i>
+                                </div>
+                                <div class="stat-info">
+                                    <span class="stat-value" id="stat-linked-cards">0</span>
+                                    <span class="stat-label">Eşleşen Kart</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 3.1. EMPLOYEES TAB CONTENT -->
+                        <div id="admin-users-tab" class="tab-content active">
+                            <div class="panel-top-bar">
+                                <h3 class="panel-title">Çalışan Listesi</h3>
+                                <div style="display: flex; gap: 1rem;">
+                                    <div class="search-bar">
+                                        <i data-lucide="search"></i>
+                                        <input type="text" id="search-users" placeholder="İsim veya soyisim ara...">
+                                    </div>
+                                    <button class="btn-action" id="btn-add-user">
+                                        <i data-lucide="plus"></i> Yeni Çalışan Ekle
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="table-responsive">
+                                <table class="glass-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Ad Soyad</th>
+                                            <th>Takım</th>
+                                            <th>Unvan</th>
+                                            <th>NFC Kartı</th>
+                                            <th>Ofis Durumu</th>
+                                            <th style="width: 160px; text-align: center;">İşlemler</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="users-table-body">
+                                        <!-- Dynamic Content -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- 3.2. TEAMS TAB CONTENT -->
+                        <div id="admin-teams-tab" class="tab-content">
+                            <div class="panel-top-bar">
+                                <h3 class="panel-title">Takım Listesi</h3>
+                                <button class="btn-action" id="btn-add-team">
+                                    <i data-lucide="plus"></i> Yeni Takım Ekle
+                                </button>
+                            </div>
+                            
+                            <div class="table-responsive">
+                                <table class="glass-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Takım Adı</th>
+                                            <th>Üye Sayısı</th>
+                                            <th>Lideri</th>
+                                            <th style="width: 120px; text-align: center;">İşlemler</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="teams-table-body">
+                                        <!-- Dynamic Content -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- 3.3. LEADERS TAB CONTENT -->
+                        <div id="admin-leaders-tab" class="tab-content">
+                            <div class="panel-top-bar">
+                                <h3 class="panel-title">Takım Lideri Hesapları</h3>
+                                <button class="btn-action" id="btn-add-leader">
+                                    <i data-lucide="plus"></i> Yeni Lider Ekle
+                                </button>
+                            </div>
+                            
+                            <div class="table-responsive">
+                                <table class="glass-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Kullanıcı Adı</th>
+                                            <th>Sorumlu Olduğu Takım</th>
+                                            <th style="width: 120px; text-align: center;">İşlemler</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="leaders-table-body">
+                                        <!-- Dynamic Content -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- 3.4. LOGS TAB CONTENT -->
+                        <div id="admin-logs-tab" class="tab-content">
+                            <div class="panel-top-bar">
+                                <h3 class="panel-title">Son Hareketler</h3>
+                                <button class="btn-secondary" id="btn-clear-logs" style="color: var(--accent-rose); border-color: rgba(244, 63, 94, 0.2);">
+                                    <i data-lucide="trash-2"></i> Logları Temizle
+                                </button>
+                            </div>
+                            
+                            <div class="table-responsive">
+                                <table class="glass-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Tarih / Saat</th>
+                                            <th>Çalışan</th>
+                                            <th>Takım</th>
+                                            <th>İşlem Türü</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="logs-table-body">
+                                        <!-- Dynamic Content -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                    </div>
+                </main>
+            </div>
+        </section>
+
+        <!-- ==========================================================================
+             4. LEADER DASHBOARD VIEW
+             ========================================================================== -->
+        <section id="leader-view" class="view-section">
+            <div class="dashboard-container">
+                <!-- Sidebar -->
+                <aside class="sidebar">
+                    <div>
+                        <div class="sidebar-logo-section">
+                            <img src="./images.png" alt="Nothelle Logo" class="sidebar-logo" onerror="this.src='https://via.placeholder.com/120x50/090a10/ffffff?text=Nothelle'">
+                            <span style="font-weight: 700; font-size: 1.1rem; color: var(--accent-indigo); letter-spacing: 0.5px;">LİDER</span>
+                        </div>
+                        
+                        <nav class="sidebar-nav">
+                            <div class="nav-item active">
+                                <i data-lucide="layout-grid"></i>
+                                <span>Takım Durumu</span>
+                            </div>
+                        </nav>
+                    </div>
+                    
+                    <div class="sidebar-footer">
+                        <div class="user-profile-widget">
+                            <div class="user-avatar" id="leader-avatar">TL</div>
+                            <div class="user-details">
+                                <span class="profile-name" id="leader-profile-name">Takım Lideri</span>
+                                <span class="profile-role" id="leader-profile-team">Yazılım Ekibi</span>
+                            </div>
+                        </div>
+                        <button class="btn-logout" id="leader-logout-btn">
+                            <i data-lucide="log-out"></i> Çıkış Yap
+                        </button>
+                    </div>
+                </aside>
+
+                <!-- Main Content Area -->
+                <main class="dashboard-main">
+                    <header class="dashboard-header">
+                        <div class="dashboard-title-container">
+                            <h2 class="dashboard-main-title" id="leader-team-title">Yazılım Takımı Durumu</h2>
+                            <p class="dashboard-main-subtitle">Takımınızın anlık ofiste olup olmadığını canlı takip edin</p>
+                        </div>
+                        <div class="header-actions">
+                            <button class="btn-secondary" id="leader-to-kiosk-btn">
+                                <i data-lucide="monitor"></i> Kiosk Modu
+                            </button>
+                        </div>
+                    </header>
+                    
+                    <div class="dashboard-body">
+                        <!-- Stats Summary -->
+                        <div class="stat-grid">
+                            <div class="stat-card glass-panel">
+                                <div class="stat-icon-box icon-indigo">
+                                    <i data-lucide="users"></i>
+                                </div>
+                                <div class="stat-info">
+                                    <span class="stat-value" id="leader-stat-total">0</span>
+                                    <span class="stat-label">Takım Üyesi</span>
+                                </div>
+                            </div>
+                            
+                            <div class="stat-card glass-panel">
+                                <div class="stat-icon-box icon-emerald">
+                                    <i data-lucide="check-circle-2"></i>
+                                </div>
+                                <div class="stat-info">
+                                    <span class="stat-value" id="leader-stat-present">0</span>
+                                    <span class="stat-label">Ofiste Olanlar</span>
+                                </div>
+                            </div>
+                            
+                            <div class="stat-card glass-panel">
+                                <div class="stat-icon-box icon-rose">
+                                    <i data-lucide="x-circle"></i>
+                                </div>
+                                <div class="stat-info">
+                                    <span class="stat-value" id="leader-stat-absent">0</span>
+                                    <span class="stat-label">Ofiste Olmayanlar</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Real-time Team Member Grid -->
+                        <div class="panel-top-bar" style="margin-bottom: 0;">
+                            <h3 class="panel-title">Takım Durum Paneli (Canlı)</h3>
+                        </div>
+                        <div class="team-grid" id="leader-team-grid">
+                            <!-- Team members will be rendered dynamically here -->
+                        </div>
+                    </div>
+                </main>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- ==========================================================================
+         5. WELCOME & FAREWELL OVERLAY DIALOG (7 Seconds Countdown)
+         ========================================================================== -->
+    <div class="welcome-overlay" id="welcome-overlay">
+        <div class="welcome-container glass-panel">
+            <div class="success-glow-circle" id="welcome-glow-circle">
+                <i data-lucide="check" id="welcome-icon" style="width: 50px; height: 50px;"></i>
+            </div>
+            
+            <div class="welcome-status-tag" id="welcome-status-tag">GİRİŞ YAPILDI</div>
+            
+            <p class="welcome-msg" id="welcome-msg-text">Ofise Hoş Geldin</p>
+            <h1 class="welcome-username" id="welcome-user-name">Furkan Yalçın</h1>
+            
+            <div class="welcome-details">
+                <span id="welcome-user-team">
+                    <i data-lucide="layers" style="color: var(--accent-indigo);"></i> Yazılım Takımı
+                </span>
+                <span id="welcome-user-time">
+                    <i data-lucide="clock" style="color: var(--accent-blue);"></i> 09:32
+                </span>
+            </div>
+            
+            <!-- Circular countdown timer progress bar -->
+            <div class="countdown-container" id="welcome-close-btn" style="cursor: pointer;">
+                <svg class="countdown-svg">
+                    <circle class="countdown-circle-bg" cx="30" cy="30" r="28" />
+                    <circle class="countdown-circle-progress" id="countdown-progress" cx="30" cy="30" r="28" />
+                </svg>
+                <div class="countdown-text" id="countdown-number">7</div>
+            </div>
+            
+            <p class="welcome-close-hint">Kapatmak için ekrana tıklayabilirsiniz</p>
+        </div>
+    </div>
+
+    <!-- ==========================================================================
+         6. MODALS
+         ========================================================================== -->
+         
+    <!-- 6.1. Add/Edit Employee Modal -->
+    <div class="modal-overlay" id="modal-employee">
+        <div class="modal-card glass-panel">
+            <div class="modal-header">
+                <h3 class="modal-title" id="employee-modal-title">Yeni Çalışan Ekle</h3>
+                <button class="btn-close-modal" onclick="closeModal('modal-employee')">
+                    <i data-lucide="x"></i>
+                </button>
+            </div>
+            <form id="employee-form">
+                <input type="hidden" id="employee-id">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label class="form-label" for="employee-name">Ad</label>
+                        <input type="text" id="employee-name" class="form-input" style="padding-left: 1rem;" placeholder="Örn: Ahmet" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="employee-surname">Soyad</label>
+                        <input type="text" id="employee-surname" class="form-input" style="padding-left: 1rem;" placeholder="Örn: Yılmaz" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="employee-team">Takım</label>
+                        <div class="select-wrapper">
+                            <select id="employee-team" class="form-select" required>
+                                <!-- Dynamic Options -->
+                            </select>
+                            <i data-lucide="chevron-down" class="select-arrow"></i>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="employee-title">Unvan</label>
+                        <input type="text" id="employee-title" class="form-input" style="padding-left: 1rem;" placeholder="Örn: Senior Frontend Developer" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-secondary" onclick="closeModal('modal-employee')">İptal</button>
+                    <button type="submit" class="btn-primary">Kaydet</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- 6.2. Add Team Modal -->
+    <div class="modal-overlay" id="modal-team">
+        <div class="modal-card glass-panel">
+            <div class="modal-header">
+                <h3 class="modal-title">Yeni Takım Ekle</h3>
+                <button class="btn-close-modal" onclick="closeModal('modal-team')">
+                    <i data-lucide="x"></i>
+                </button>
+            </div>
+            <form id="team-form">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label class="form-label" for="team-name">Takım Adı</label>
+                        <input type="text" id="team-name" class="form-input" style="padding-left: 1rem;" placeholder="Örn: Mobil Geliştirme" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-secondary" onclick="closeModal('modal-team')">İptal</button>
+                    <button type="submit" class="btn-primary">Ekle</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- 6.3. Add/Edit Leader Modal -->
+    <div class="modal-overlay" id="modal-leader">
+        <div class="modal-card glass-panel">
+            <div class="modal-header">
+                <h3 class="modal-title" id="leader-modal-title">Yeni Takım Lideri Ekle</h3>
+                <button class="btn-close-modal" onclick="closeModal('modal-leader')">
+                    <i data-lucide="x"></i>
+                </button>
+            </div>
+            <form id="leader-form">
+                <input type="hidden" id="leader-id">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label class="form-label" for="leader-username">Kullanıcı Adı</label>
+                        <input type="text" id="leader-username" class="form-input" style="padding-left: 1rem;" placeholder="Örn: ahmet_lider" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="leader-password">Giriş Şifresi</label>
+                        <input type="password" id="leader-password" class="form-input" style="padding-left: 1rem;" placeholder="Şifre belirleyin" required autocomplete="new-password">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="leader-team">Sorumlu Olduğu Takım</label>
+                        <div class="select-wrapper">
+                            <select id="leader-team" class="form-select" required>
+                                <!-- Dynamic Options -->
+                            </select>
+                            <i data-lucide="chevron-down" class="select-arrow"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-secondary" onclick="closeModal('modal-leader')">İptal</button>
+                    <button type="submit" class="btn-primary">Kaydet</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- 6.4. NFC Scan / Card Linking Modal (Triggered by Admin) -->
+    <div class="modal-overlay" id="modal-nfc-scan">
+        <div class="modal-card glass-panel">
+            <div class="modal-header">
+                <h3 class="modal-title">Kart Eşleştiriliyor</h3>
+                <button class="btn-close-modal" onclick="cancelNfcScan()">
+                    <i data-lucide="x"></i>
+                </button>
+            </div>
+            <div class="nfc-scan-modal-body">
+                <div class="nfc-scan-loader">
+                    <div class="nfc-scan-wave"></div>
+                    <div class="nfc-scan-pulse"></div>
+                    <i data-lucide="rss"></i>
+                </div>
+                <h4 class="nfc-scan-title" id="nfc-scan-user-name">Kullanıcı: Ahmet Yılmaz</h4>
+                <p class="nfc-scan-desc">
+                    Lütfen kartı tabletin arkasındaki NFC okuyucusuna yaklaştırın.<br>
+                    <span style="color: var(--accent-amber); font-weight: 500; font-size: 0.85rem; margin-top: 0.5rem; display: inline-block;">
+                        (Alternatif: Ekranın altındaki 'Sanal NFC Kartı' simülatöründen bir kart seçerek eşleştirebilirsiniz.)
+                    </span>
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-secondary" onclick="cancelNfcScan()">İptal Et</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==========================================================================
+         7. VIRTUAL NFC CARD SIMULATOR (FAB + PANEL)
+         ========================================================================== -->
+    <button class="simulator-toggle-btn" id="simulator-toggle-btn">
+        <i data-lucide="cpu"></i>
+        <span>Sanal Kart Okutucu</span>
+    </button>
+
+    <div class="simulator-panel glass-panel" id="simulator-panel">
+        <div class="simulator-header">
+            <span class="simulator-title">
+                <i data-lucide="cpu"></i> Sanal NFC Kart Simülatörü
+            </span>
+            <button class="btn-close-modal" id="simulator-close-btn" style="color: var(--accent-amber);">
+                <i data-lucide="chevron-down"></i>
+            </button>
+        </div>
+        <div class="simulator-body">
+            <span class="simulator-subtitle">Kayıtlı Çalışan Kartları</span>
+            <div class="card-simulator-grid" id="sim-cards-list">
+                <!-- Render existing cards with quick buttons to trigger them -->
+            </div>
+            
+            <div style="border-top: 1px solid var(--glass-border); padding-top: 1rem;">
+                <span class="simulator-subtitle" style="display: block; margin-bottom: 0.5rem;">Yeni / Bilinmeyen Kart Okut</span>
+                <div class="custom-card-input-group">
+                    <input type="text" id="sim-custom-uid" placeholder="Örn: 04:DE:8F:A2" value="04:DE:8F:A2">
+                    <button class="btn-sim-trigger" id="btn-sim-trigger-custom">
+                        <i data-lucide="rss"></i> Okut
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Core Javascript Code -->
+    <script src="app.js"></script>
+</body>
+</html>
