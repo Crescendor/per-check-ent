@@ -1,5 +1,5 @@
 /* ==========================================================================
-   Nothelle Yoklama - Main Application JavaScript
+   Ofis Yoklama - Main Application JavaScript
    ========================================================================== */
 
 // --- Global Application State ---
@@ -95,18 +95,18 @@ function playBeep(type) {
 // --- Data Seeding & Storage Handlers ---
 function initDatabase() {
     // 1. Teams Seeding
-    if (!localStorage.getItem('nothelle_teams')) {
+    if (!localStorage.getItem('office_teams')) {
         const defaultTeams = [
             { id: 'team-1', name: 'Yazılım' },
             { id: 'team-2', name: 'Tasarım' },
             { id: 'team-3', name: 'Pazarlama' },
             { id: 'team-4', name: 'İnsan Kaynakları' }
         ];
-        localStorage.setItem('nothelle_teams', JSON.stringify(defaultTeams));
+        localStorage.setItem('office_teams', JSON.stringify(defaultTeams));
     }
     
     // 2. Users Seeding
-    if (!localStorage.getItem('nothelle_users')) {
+    if (!localStorage.getItem('office_users')) {
         const defaultUsers = [
             { id: 'user-1', name: 'Furkan', surname: 'Yalçın', teamId: 'team-1', title: 'Senior Software Architect', cardId: '04:A1:B2:C3', isPresent: false, lastActivity: null },
             { id: 'user-2', name: 'Ece', surname: 'Kaya', teamId: 'team-1', title: 'Frontend Developer', cardId: '04:B2:C3:D4', isPresent: true, lastActivity: new Date(new Date().getTime() - 2*3600*1000).toISOString() }, // 2 hours ago
@@ -114,35 +114,35 @@ function initDatabase() {
             { id: 'user-4', name: 'Gözde', surname: 'Şahin', teamId: 'team-3', title: 'Marketing Specialist', cardId: '04:D4:E5:F6', isPresent: true, lastActivity: new Date(new Date().getTime() - 4*3600*1000).toISOString() }, // 4 hours ago
             { id: 'user-5', name: 'Mert', surname: 'Yılmaz', teamId: 'team-4', title: 'HR Manager', cardId: null, isPresent: false, lastActivity: null }
         ];
-        localStorage.setItem('nothelle_users', JSON.stringify(defaultUsers));
+        localStorage.setItem('office_users', JSON.stringify(defaultUsers));
     }
 
     // 3. Leaders Seeding
-    if (!localStorage.getItem('nothelle_leaders')) {
+    if (!localStorage.getItem('office_leaders')) {
         const defaultLeaders = [
             { id: 'leader-1', username: 'yazilim_lider', password: '123', teamId: 'team-1' },
             { id: 'leader-2', username: 'tasarim_lider', password: '123', teamId: 'team-2' }
         ];
-        localStorage.setItem('nothelle_leaders', JSON.stringify(defaultLeaders));
+        localStorage.setItem('office_leaders', JSON.stringify(defaultLeaders));
     }
 
     // 4. Logs Seeding
-    if (!localStorage.getItem('nothelle_logs')) {
+    if (!localStorage.getItem('office_logs')) {
         const defaultLogs = [
             { timestamp: new Date(new Date().getTime() - 4*3600*1000).toISOString(), userId: 'user-4', userName: 'Gözde Şahin', teamName: 'Pazarlama', type: 'in' },
             { timestamp: new Date(new Date().getTime() - 2*3600*1000).toISOString(), userId: 'user-2', userName: 'Ece Kaya', teamName: 'Yazılım', type: 'in' }
         ];
-        localStorage.setItem('nothelle_logs', JSON.stringify(defaultLogs));
+        localStorage.setItem('office_logs', JSON.stringify(defaultLogs));
     }
 
     loadData();
 }
 
 function loadData() {
-    state.users = JSON.parse(localStorage.getItem('nothelle_users')) || [];
-    state.teams = JSON.parse(localStorage.getItem('nothelle_teams')) || [];
-    state.leaders = JSON.parse(localStorage.getItem('nothelle_leaders')) || [];
-    state.logs = JSON.parse(localStorage.getItem('nothelle_logs')) || [];
+    state.users = JSON.parse(localStorage.getItem('office_users')) || [];
+    state.teams = JSON.parse(localStorage.getItem('office_teams')) || [];
+    state.leaders = JSON.parse(localStorage.getItem('office_leaders')) || [];
+    state.logs = JSON.parse(localStorage.getItem('office_logs')) || [];
 }
 
 function saveData(key, data) {
@@ -523,7 +523,7 @@ function handleNfcScan(uid) {
         
         // Link the card
         user.cardId = uid;
-        saveData('nothelle_users', state.users);
+        saveData('office_users', state.users);
         
         // Success audio signal (Double high beep)
         playBeep('in');
@@ -571,8 +571,8 @@ function handleNfcScan(uid) {
     state.logs.push(newLog);
     
     // Save state
-    saveData('nothelle_users', state.users);
-    saveData('nothelle_logs', state.logs);
+    saveData('office_users', state.users);
+    saveData('office_logs', state.logs);
     
     // Success audio signal (Dynamic tones based on status)
     playBeep(user.isPresent ? 'in' : 'out');
@@ -847,7 +847,7 @@ document.getElementById('employee-form').addEventListener('submit', (e) => {
         state.users.push(newUser);
     }
     
-    saveData('nothelle_users', state.users);
+    saveData('office_users', state.users);
     closeModal('modal-employee');
     renderUsersList();
     renderAdminDashboard();
@@ -873,7 +873,7 @@ window.editUser = function(userId) {
 window.deleteUser = function(userId) {
     if (confirm("Bu çalışanı silmek istediğinize emin misiniz? (Bağlı kart devredışı kalacaktır)")) {
         state.users = state.users.filter(u => u.id !== userId);
-        saveData('nothelle_users', state.users);
+        saveData('office_users', state.users);
         renderUsersList();
         renderAdminDashboard();
         renderSimulatorCards();
@@ -898,7 +898,7 @@ document.getElementById('team-form').addEventListener('submit', (e) => {
     };
     
     state.teams.push(newTeam);
-    saveData('nothelle_teams', state.teams);
+    saveData('office_teams', state.teams);
     closeModal('modal-team');
     populateDropdowns();
     renderTeamsList();
@@ -919,8 +919,8 @@ window.deleteTeam = function(teamId) {
         // Also remove leaders associated with this team
         state.leaders = state.leaders.filter(l => l.teamId !== teamId);
         
-        saveData('nothelle_teams', state.teams);
-        saveData('nothelle_leaders', state.leaders);
+        saveData('office_teams', state.teams);
+        saveData('office_leaders', state.leaders);
         
         populateDropdowns();
         renderTeamsList();
@@ -964,7 +964,7 @@ document.getElementById('leader-form').addEventListener('submit', (e) => {
         state.leaders.push(newLeader);
     }
     
-    saveData('nothelle_leaders', state.leaders);
+    saveData('office_leaders', state.leaders);
     closeModal('modal-leader');
     renderLeadersList();
     renderAdminDashboard();
@@ -988,7 +988,7 @@ window.editLeader = function(leaderId) {
 window.deleteLeader = function(leaderId) {
     if (confirm("Bu lider hesabını silmek istediğinize emin misiniz?")) {
         state.leaders = state.leaders.filter(l => l.id !== leaderId);
-        saveData('nothelle_leaders', state.leaders);
+        saveData('office_leaders', state.leaders);
         renderLeadersList();
         renderAdminDashboard();
     }
@@ -998,7 +998,7 @@ window.deleteLeader = function(leaderId) {
 document.getElementById('btn-clear-logs').addEventListener('click', () => {
     if (confirm("Tüm giriş-çıkış loglarını silmek istediğinize emin misiniz?")) {
         state.logs = [];
-        saveData('nothelle_logs', state.logs);
+        saveData('office_logs', state.logs);
         renderLogsList();
     }
 });
@@ -1151,3 +1151,4 @@ document.addEventListener('DOMContentLoaded', () => {
         renderSimulatorCards();
     });
 });
+
