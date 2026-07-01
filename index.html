@@ -6,6 +6,8 @@
     <title>Nothelle - Ofis Mesai Takibi Sistemi</title>
     <!-- Lucide Icons CDN -->
     <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- SheetJS CDN for Excel Export -->
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
     <!-- Custom Style Sheet -->
     <link rel="stylesheet" href="style.css">
 </head>
@@ -369,9 +371,13 @@
                         </div>
                         
                         <nav class="sidebar-nav">
-                            <div class="nav-item active">
+                            <div class="nav-item active" data-target-tab="leader-status-tab">
                                 <i data-lucide="layout-grid"></i>
                                 <span>Takım Durumu</span>
+                            </div>
+                            <div class="nav-item" data-target-tab="leader-logs-tab">
+                                <i data-lucide="clock"></i>
+                                <span>Giriş/Çıkış Logları</span>
                             </div>
                         </nav>
                     </div>
@@ -438,12 +444,59 @@
                             </div>
                         </div>
 
-                        <!-- Real-time Team Member Grid -->
-                        <div class="panel-top-bar" style="margin-bottom: 0;">
-                            <h3 class="panel-title">Takım Durum Paneli (Canlı)</h3>
+                        <!-- 4.1. LEADER STATUS TAB CONTENT -->
+                        <div id="leader-status-tab" class="tab-content active">
+                            <!-- Real-time Team Member Grid -->
+                            <div class="panel-top-bar" style="margin-bottom: 0;">
+                                <h3 class="panel-title">Takım Durum Paneli (Canlı)</h3>
+                            </div>
+                            <div class="team-grid" id="leader-team-grid">
+                                <!-- Team members will be rendered dynamically here -->
+                            </div>
                         </div>
-                        <div class="team-grid" id="leader-team-grid">
-                            <!-- Team members will be rendered dynamically here -->
+
+                        <!-- 4.2. LEADER LOGS TAB CONTENT -->
+                        <div id="leader-logs-tab" class="tab-content">
+                            <div class="panel-top-bar" style="flex-wrap: wrap; gap: 1rem; margin-bottom: 1.5rem;">
+                                <h3 class="panel-title">Giriş / Çıkış Log Raporu</h3>
+                                <div class="filter-group-container" style="display: flex; gap: 0.75rem; flex-wrap: wrap; align-items: center;">
+                                    <div class="date-input-wrapper" style="display: flex; align-items: center; gap: 0.5rem; background: rgba(255,255,255,0.03); border: 1px solid var(--glass-border); padding: 0.4rem 0.8rem; border-radius: var(--radius-md);">
+                                        <label style="font-size: 0.8rem; color: var(--text-muted);">Başlangıç:</label>
+                                        <input type="date" id="leader-log-start" style="background: transparent; border: none; color: white; outline: none; font-size: 0.85rem;">
+                                    </div>
+                                    <div class="date-input-wrapper" style="display: flex; align-items: center; gap: 0.5rem; background: rgba(255,255,255,0.03); border: 1px solid var(--glass-border); padding: 0.4rem 0.8rem; border-radius: var(--radius-md);">
+                                        <label style="font-size: 0.8rem; color: var(--text-muted);">Bitiş:</label>
+                                        <input type="date" id="leader-log-end" style="background: transparent; border: none; color: white; outline: none; font-size: 0.85rem;">
+                                    </div>
+                                    <button class="btn-primary" id="btn-leader-log-filter" style="width: auto; padding: 0.5rem 1rem; font-size: 0.85rem; height: 38px;">
+                                        <i data-lucide="filter" style="width:14px; height:14px;"></i> Filtrele
+                                    </button>
+                                    <button class="btn-action" id="btn-leader-log-export" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); box-shadow: 0 4px 15px rgba(16, 185, 129, 0.2); height: 38px; display: flex; align-items: center; gap: 0.5rem;">
+                                        <i data-lucide="file-spreadsheet" style="width:14px; height:14px;"></i> Excel İndir
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <!-- Toggle Report Type -->
+                            <div style="display: flex; gap: 1rem; margin-bottom: 1.5rem; border-bottom: 1px solid var(--glass-border); padding-bottom: 1rem;">
+                                <button class="btn-secondary active-report-type" id="btn-report-grouped" style="padding: 0.5rem 1.25rem; font-size: 0.85rem; border-radius: var(--radius-md); background: rgba(99, 102, 241, 0.15); border-color: rgba(99, 102, 241, 0.25); color: white;">
+                                    Günlük Özet Raporu
+                                </button>
+                                <button class="btn-secondary" id="btn-report-raw" style="padding: 0.5rem 1.25rem; font-size: 0.85rem; border-radius: var(--radius-md);">
+                                    Tüm Giriş/Çıkış Hareketleri
+                                </button>
+                            </div>
+
+                            <div class="table-responsive">
+                                <table class="glass-table" id="leader-logs-table" style="width: 100%;">
+                                    <thead id="leader-logs-table-head">
+                                        <!-- Dynamic headers -->
+                                    </thead>
+                                    <tbody id="leader-logs-table-body">
+                                        <!-- Dynamic Content -->
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </main>

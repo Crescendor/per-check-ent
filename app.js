@@ -225,6 +225,19 @@ function showView(viewId) {
     } else if (viewId === 'admin-view') {
         renderAdminDashboard();
     } else if (viewId === 'leader-view') {
+        // Reset tab view to leader-status-tab
+        const navItems = document.querySelectorAll('#leader-view .nav-item');
+        if (navItems.length > 0) {
+            navItems.forEach(nav => nav.classList.remove('active'));
+            navItems[0].classList.add('active');
+        }
+        
+        document.querySelectorAll('#leader-view .tab-content').forEach(tab => {
+            tab.classList.remove('active');
+        });
+        const statusTab = document.getElementById('leader-status-tab');
+        if (statusTab) statusTab.classList.add('active');
+        
         renderLeaderDashboard();
     }
 }
@@ -518,6 +531,396 @@ function renderLeaderDashboard() {
         grid.appendChild(card);
     });
     lucide.createIcons();
+}
+
+// --- Leader Logs View Management ---
+let leaderReportType = 'grouped'; // 'grouped' or 'raw'
+
+function setupLeaderTabs() {
+    const navItems = document.querySelectorAll('#leader-view .nav-item');
+    navItems.forEach(item => {
+        item.addEventListener('click', () => {
+            navItems.forEach(nav => nav.classList.remove('active'));
+            item.classList.add('active');
+            
+            const targetTabId = item.getAttribute('data-target-tab');
+            document.querySelectorAll('#leader-view .tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.getElementById(targetTabId).classList.add('active');
+            
+            if (targetTabId === 'leader-logs-tab') {
+                // Set default dates if empty (current month)
+                const now = new Date();
+                const firstDay = new Date(now.getFullYear(), now.getMonth(), 1).toISOString().split('T')[0];
+                const lastDay = now.toISOString().split('T')[0];
+                
+                if (!document.getElementById('leader-log-start').value) {
+                    document.getElementById('leader-log-start').value = firstDay;
+                }
+                if (!document.getElementById('leader-log-end').value) {
+                    document.getElementById('leader-log-end').value = lastDay;
+                }
+                
+                renderLeaderLogsTab();
+            } else {
+                renderLeaderDashboard();
+            }
+        });
+    });
+    
+    // Hook report type switcher buttons
+    const btnGrouped = document.getElementById('btn-report-grouped');
+    const btnRaw = document.getElementById('btn-report-raw');
+    
+    if (btnGrouped && btnRaw) {
+        btnGrouped.addEventListener('click', () => {
+            leaderReportType = 'grouped';
+            btnGrouped.classList.add('active-report-type');
+            btnGrouped.style.background = 'rgba(99, 102, 241, 0.15)';
+            btnGrouped.style.borderColor = 'rgba(99, 102, 241, 0.25)';
+            btnGrouped.style.color = 'white';
+            
+            btnRaw.classList.remove('active-report-type');
+            btnRaw.style.background = 'transparent';
+            btnRaw.style.borderColor = 'transparent';
+            btnRaw.style.color = 'var(--text-muted)';
+            
+            renderLeaderLogsTab();
+        });
+        
+        btnRaw.addEventListener('click', () => {
+            leaderReportType = 'raw';
+            btnRaw.classList.add('active-report-type');
+            btnRaw.style.background = 'rgba(99, 102, 241, 0.15)';
+            btnRaw.style.borderColor = 'rgba(99, 102, 241, 0.25)';
+            btnRaw.style.color = 'white';
+            
+            btnGrouped.classList.remove('active-report-type');
+            btnGrouped.style.background = 'transparent';
+            btnGrouped.style.borderColor = 'transparent';
+            btnGrouped.style.color = 'var(--text-muted)';
+            
+            renderLeaderLogsTab();
+        });
+    }
+    
+    // Hook filter button
+    const btnFilter = document.getElementById('btn-leader-log-filter');
+    if (btnFilter) {
+        btnFilter.addEventListener('click', renderLeaderLogsTab);
+    }
+    
+    // Hook export button
+    const btnExport = document.getElementById('btn-leader-log-export');
+    if (btnExport) {
+        btnExport.addEventListener('click', exportLeaderLogsToExcel);
+    }
+}
+
+function getLeaderFilteredLogs() {
+    if (!state.currentUser || state.currentUser.role !== 'leader') return [];
+    
+    const teamUsers = state.users.filter(u => u.teamId === state.currentUser.teamId);
+    const teamUserIds = new Set(teamUsers.map(u => u.id));
+    
+    const startDateStr = document.getElementById('leader-log-start').value;
+    const endDateStr = document.getElementById('leader-log-end').value;
+    
+    let filteredLogs = state.logs.filter(log => teamUserIds.has(log.userId));
+    
+    if (startDateStr) {
+        const start = new Date(startDateStr);
+        start.setHours(0,0,0,0);
+        filteredLogs = filteredLogs.filter(log => new Date(log.timestamp) >= start);
+    }
+    if (endDateStr) {
+        const end = new Date(endDateStr);
+        end.setHours(23,59,59,999);
+        filteredLogs = filteredLogs.filter(log => new Date(log.timestamp) <= end);
+    }
+    
+    return filteredLogs;
+}
+
+function renderLeaderLogsTab() {
+    const tableHead = document.getElementById('leader-logs-table-head');
+    const tableBody = document.getElementById('leader-logs-table-body');
+    
+    if (!tableHead || !tableBody) return;
+    
+    tableHead.innerHTML = '';
+    tableBody.innerHTML = '';
+    
+    const filteredLogs = getLeaderFilteredLogs();
+    
+    if (leaderReportType === 'grouped') {
+        // Render Grouped Daily Summary Header
+        tableHead.innerHTML = `
+            <tr>
+                <th>Tarih</th>
+                <th>Çalışan</th>
+                <th>Unvan</th>
+                <th>İlk Giriş</th>
+                <th>Son Çıkış</th>
+                <th>Toplam Süre</th>
+                <th>Giriş/Çıkış Detayları</th>
+            </tr>
+        `;
+        
+        // Grouping logic by YYYY-MM-DD and userId
+        const groups = {};
+        filteredLogs.forEach(log => {
+            const dateKey = new Date(log.timestamp).toLocaleDateString('en-CA'); // YYYY-MM-DD
+            const groupKey = `${dateKey}_${log.userId}`;
+            if (!groups[groupKey]) {
+                const user = state.users.find(u => u.id === log.userId);
+                groups[groupKey] = {
+                    date: dateKey,
+                    userId: log.userId,
+                    userName: log.userName,
+                    title: user ? user.title : '',
+                    logs: []
+                };
+            }
+            groups[groupKey].logs.push(log);
+        });
+        
+        const reportData = Object.values(groups).map(g => {
+            // Sort logs of this day ascending to find first and last
+            g.logs.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+            
+            const entries = g.logs.filter(l => l.type === 'in');
+            const exits = g.logs.filter(l => l.type === 'out');
+            
+            const firstEntry = entries.length > 0 ? entries[0] : null;
+            const lastExit = exits.length > 0 ? exits[exits.length - 1] : null;
+            
+            let durationStr = '-';
+            if (firstEntry && lastExit) {
+                const diffMs = new Date(lastExit.timestamp) - new Date(firstEntry.timestamp);
+                if (diffMs > 0) {
+                    const totalMinutes = Math.floor(diffMs / (1000 * 60));
+                    const hours = Math.floor(totalMinutes / 60);
+                    const minutes = totalMinutes % 60;
+                    durationStr = `${hours} sa ${minutes} dk`;
+                }
+            }
+            
+            const detailLines = g.logs.map(l => {
+                const time = new Date(l.timestamp).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' });
+                return `${l.type === 'in' ? 'Giriş' : 'Çıkış'}: ${time}`;
+            }).join(' | ');
+            
+            return {
+                date: new Date(g.date).toLocaleDateString('tr-TR'),
+                userName: g.userName,
+                title: g.title,
+                firstEntry: firstEntry ? new Date(firstEntry.timestamp).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' }) : '-',
+                lastExit: lastExit ? new Date(lastExit.timestamp).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' }) : '-',
+                duration: durationStr,
+                details: detailLines
+            };
+        });
+        
+        // Sort grouped data: Date Descending, then Username Ascending
+        reportData.sort((a, b) => {
+            const dateA = new Date(a.date.split('.').reverse().join('-'));
+            const dateB = new Date(b.date.split('.').reverse().join('-'));
+            const dateDiff = dateB - dateA;
+            if (dateDiff !== 0) return dateDiff;
+            return a.userName.localeCompare(b.userName);
+        });
+        
+        if (reportData.length === 0) {
+            tableBody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: var(--text-muted); padding: 2rem;">Belirtilen tarih aralığında log bulunamadı.</td></tr>`;
+            return;
+        }
+        
+        reportData.forEach(row => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td style="font-family: monospace;">${row.date}</td>
+                <td style="font-weight: 600;">${row.userName}</td>
+                <td style="color: var(--text-muted); font-size: 0.9rem;">${row.title}</td>
+                <td><span class="status-pill pill-in" style="font-family: monospace; font-size: 0.85rem;">${row.firstEntry}</span></td>
+                <td><span class="status-pill pill-out" style="font-family: monospace; font-size: 0.85rem;">${row.lastExit}</span></td>
+                <td style="font-weight: 600; color: #a5b4fc;">${row.duration}</td>
+                <td style="color: var(--text-muted); font-size: 0.85rem; max-width: 320px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${row.details}">${row.details}</td>
+            `;
+            tableBody.appendChild(tr);
+        });
+        
+    } else {
+        // Render Raw Logs Header
+        tableHead.innerHTML = `
+            <tr>
+                <th>Tarih / Saat</th>
+                <th>Çalışan</th>
+                <th>Unvan</th>
+                <th>İşlem Türü</th>
+            </tr>
+        `;
+        
+        const sortedLogs = [...filteredLogs].sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+        
+        if (sortedLogs.length === 0) {
+            tableBody.innerHTML = `<tr><td colspan="4" style="text-align: center; color: var(--text-muted); padding: 2rem;">Belirtilen tarih aralığında hareket bulunamadı.</td></tr>`;
+            return;
+        }
+        
+        sortedLogs.forEach(log => {
+            const date = new Date(log.timestamp);
+            const formattedDate = date.toLocaleDateString('tr-TR', { day: '2-digit', month: '2-digit', year: 'numeric' });
+            const formattedTime = date.toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+            
+            const user = state.users.find(u => u.id === log.userId);
+            const userTitle = user ? user.title : '';
+            
+            const typeBadge = log.type === 'in' 
+                ? `<span class="status-pill pill-in">Ofise Giriş</span>` 
+                : `<span class="status-pill pill-out">Ofisten Çıkış</span>`;
+                
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td style="color: var(--text-muted); font-size: 0.9rem; font-family: monospace;">${formattedDate} - ${formattedTime}</td>
+                <td style="font-weight: 600;">${log.userName}</td>
+                <td style="color: var(--text-muted); font-size: 0.9rem;">${userTitle}</td>
+                <td>${typeBadge}</td>
+            `;
+            tableBody.appendChild(tr);
+        });
+    }
+    
+    lucide.createIcons();
+}
+
+function exportLeaderLogsToExcel() {
+    if (typeof XLSX === 'undefined') {
+        alert("Excel kütüphanesi yüklenemedi. Lütfen internet bağlantınızı kontrol edin.");
+        return;
+    }
+    
+    const filteredLogs = getLeaderFilteredLogs();
+    
+    if (filteredLogs.length === 0) {
+        alert("Dışa aktarılacak veri bulunamadı.");
+        return;
+    }
+    
+    const team = state.teams.find(t => t.id === state.currentUser.teamId);
+    const teamName = team ? team.name : 'Takim';
+    
+    let excelRows = [];
+    
+    if (leaderReportType === 'grouped') {
+        // Grouping logic by YYYY-MM-DD and userId for Excel
+        const groups = {};
+        filteredLogs.forEach(log => {
+            const dateKey = new Date(log.timestamp).toLocaleDateString('en-CA');
+            const groupKey = `${dateKey}_${log.userId}`;
+            if (!groups[groupKey]) {
+                const user = state.users.find(u => u.id === log.userId);
+                groups[groupKey] = {
+                    date: dateKey,
+                    userName: log.userName,
+                    title: user ? user.title : '',
+                    logs: []
+                };
+            }
+            groups[groupKey].logs.push(log);
+        });
+        
+        const reportData = Object.values(groups).map(g => {
+            g.logs.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+            
+            const entries = g.logs.filter(l => l.type === 'in');
+            const exits = g.logs.filter(l => l.type === 'out');
+            
+            const firstEntry = entries.length > 0 ? entries[0] : null;
+            const lastExit = exits.length > 0 ? exits[exits.length - 1] : null;
+            
+            let durationStr = '-';
+            if (firstEntry && lastExit) {
+                const diffMs = new Date(lastExit.timestamp) - new Date(firstEntry.timestamp);
+                if (diffMs > 0) {
+                    const totalMinutes = Math.floor(diffMs / (1000 * 60));
+                    const hours = Math.floor(totalMinutes / 60);
+                    const minutes = totalMinutes % 60;
+                    durationStr = `${hours} sa ${minutes} dk`;
+                }
+            }
+            
+            const detailLines = g.logs.map(l => {
+                const time = new Date(l.timestamp).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' });
+                return `${l.type === 'in' ? 'Giris' : 'Cikis'}: ${time}`;
+            }).join(' | ');
+            
+            return {
+                'Tarih': new Date(g.date).toLocaleDateString('tr-TR'),
+                'Çalışan': g.userName,
+                'Unvan': g.title,
+                'İlk Giriş': firstEntry ? new Date(firstEntry.timestamp).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' }) : '-',
+                'Son Çıkış': lastExit ? new Date(lastExit.timestamp).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' }) : '-',
+                'Toplam Süre': durationStr,
+                'Gün İçi Detaylar': detailLines
+            };
+        });
+        
+        // Sort grouped data
+        reportData.sort((a, b) => {
+            const dateA = new Date(a['Tarih'].split('.').reverse().join('-'));
+            const dateB = new Date(b['Tarih'].split('.').reverse().join('-'));
+            const dateDiff = dateB - dateA;
+            if (dateDiff !== 0) return dateDiff;
+            return a['Çalışan'].localeCompare(b['Çalışan']);
+        });
+        
+        excelRows = reportData;
+        
+    } else {
+        // Raw Logs for Excel
+        const sortedLogs = [...filteredLogs].sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+        
+        excelRows = sortedLogs.map(log => {
+            const date = new Date(log.timestamp);
+            const formattedDate = date.toLocaleDateString('tr-TR', { day: '2-digit', month: '2-digit', year: 'numeric' });
+            const formattedTime = date.toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+            
+            const user = state.users.find(u => u.id === log.userId);
+            
+            return {
+                'Tarih': formattedDate,
+                'Saat': formattedTime,
+                'Çalışan': log.userName,
+                'Unvan': user ? user.title : '',
+                'İşlem Türü': log.type === 'in' ? 'Ofise Giriş' : 'Ofisten Çıkış'
+            };
+        });
+    }
+    
+    // Create Excel Workbook
+    const ws = XLSX.utils.json_to_sheet(excelRows);
+    const wb = XLSX.utils.book_new();
+    
+    // Format headers and add some visual enhancements
+    // Autofit columns width
+    const maxLens = {};
+    excelRows.forEach(row => {
+        Object.keys(row).forEach(key => {
+            const val = String(row[key] || '');
+            maxLens[key] = Math.max(maxLens[key] || 10, val.length, key.length);
+        });
+    });
+    const wscols = Object.keys(maxLens).map(key => ({ wch: maxLens[key] + 3 }));
+    ws['!cols'] = wscols;
+    
+    XLSX.utils.book_append_sheet(wb, ws, "Mesai Raporu");
+    
+    const startD = document.getElementById('leader-log-start').value || 'baslangic';
+    const endD = document.getElementById('leader-log-end').value || 'bitis';
+    
+    XLSX.writeFile(wb, `Nothelle_Mesai_Raporu_${teamName}_${startD}_${endD}.xlsx`);
 }
 
 
@@ -1132,6 +1535,9 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // 5. Setup admin panel tabs routing
     setupAdminTabs();
+    
+    // 5.1. Setup leader panel tabs routing
+    setupLeaderTabs();
     
     // 6. Check Session persistence on reload
     const savedUser = sessionStorage.getItem('logged_in_user');
