@@ -1,5 +1,5 @@
 /* ==========================================================================
-   Nothelle Yoklama - Main Application JavaScript
+   Nothelle Ofis Mesai Takibi - Main Application JavaScript
    ========================================================================== */
 
 // --- Global Application State ---

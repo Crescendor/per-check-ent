@@ -1,6 +1,6 @@
-# Ofis Giriş & Yoklama Paneli (Tablet Kiosk)
+# Nothelle Ofis Mesai Takibi Sistemi (Tablet Kiosk)
 
-Bu proje; ofis girişlerinde konumlandırılan bir tablet aracılığıyla çalışanların giriş ve çıkışlarını NFC kartlar üzerinden takip etmeyi sağlayan, modern ve şık bir tablet kiosk ve yoklama yönetim sistemidir.
+Bu proje; ofis girişlerinde konumlandırılan bir tablet aracılığıyla çalışanların giriş ve çıkışlarını NFC kartlar üzerinden takip etmeyi sağlayan, modern ve şık bir tablet kiosk ve mesai takip yönetim sistemidir.
 
 ---
 
